@@ -31,18 +31,20 @@ public class ClienteController {
     @GetMapping("/{id}")
     public ResponseEntity<Cliente> obterCliente(@PathVariable Long id) {
         Optional<Cliente> cliente = clienteService.findById(id);
-        return cliente != null ? ResponseEntity.ok(cliente) : ResponseEntity.notFound().build();
+        return cliente != null ? ResponseEntity.ok().body(cliente.get()) : ResponseEntity.notFound().build();
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Cliente> atualizarCliente(@PathVariable Long id, @RequestBody ClienteDTO clienteDTO) {
         Cliente clienteAtualizado = new Cliente();
-        clienteAtualizado.setNome(clienteDTO.getNome());
+        clienteAtualizado.setName(clienteDTO.getName());
         clienteAtualizado.setEmail(clienteDTO.getEmail());
-        clienteAtualizado.setTelefone(clienteDTO.getTelefone());
-        clienteAtualizado.setEndereco(clienteDTO.getEndereco());
+        clienteAtualizado.setPhone(clienteDTO.getPhone());
+        clienteAtualizado.setAddress(clienteDTO.getAddress());
 
-        Cliente cliente = clienteService.atualizarCliente(id, clienteAtualizado);
+        Cliente cliente = clienteService.updateCliente(id, clienteAtualizado);
         return cliente != null ? ResponseEntity.ok(cliente) : ResponseEntity.notFound().build();
     }
+
+
 }
