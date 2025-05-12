@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class ClienteService {
@@ -25,13 +26,13 @@ public class ClienteService {
         return clienteRepository.findAll();
     }
 
-    public Optional<Cliente> findById(Long id)  {
+    public Optional<Cliente> findById(UUID id)  {
         Optional<Cliente> cliente = clienteRepository.findById(id);
         return cliente;
     }
 
     //For now all data are updated
-    public Cliente updateCliente(Long id, Cliente clienteAtualizado){
+    public Cliente updateCliente(UUID id, Cliente clienteAtualizado){
         Optional<Cliente> cliente = clienteRepository.findById(id);
         if(cliente.isPresent()){
             clienteRepository.save(cliente.get());
@@ -39,7 +40,7 @@ public class ClienteService {
         return cliente.get();
     }
 
-    public void deleteCliente(Long id){
+    public void deleteCliente(UUID id){
         Optional<Cliente> cliente = clienteRepository.findById(id);
         if(cliente.isPresent()){
             clienteRepository.delete(cliente.get());

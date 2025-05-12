@@ -1,16 +1,17 @@
 package com.sit.sittransportadora.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.Set;
+import java.util.UUID;
 
 @Entity
 @Data
 public class Cliente {
     @Id
-    private Long id;
+    private UUID uuid;
 
     private String name;
     private String cnpj;
@@ -18,6 +19,14 @@ public class Cliente {
     private String email;
     private String phone;
     private String address;
+
+    @ManyToMany()
+    @JoinTable(
+            name = "cliente_role",
+            joinColumns = @JoinColumn(name = "cliente_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
+    private Set<Role> roles;
 
     private LocalDateTime createDate;
     private LocalDateTime alterDate;

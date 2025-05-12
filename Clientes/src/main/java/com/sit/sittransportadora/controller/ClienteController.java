@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/clientes")
@@ -29,13 +30,13 @@ public class ClienteController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Cliente> obterCliente(@PathVariable Long id) {
+    public ResponseEntity<Cliente> obterCliente(@PathVariable UUID id) {
         Optional<Cliente> cliente = clienteService.findById(id);
         return cliente != null ? ResponseEntity.ok().body(cliente.get()) : ResponseEntity.notFound().build();
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Cliente> atualizarCliente(@PathVariable Long id, @RequestBody ClienteDTO clienteDTO) {
+    public ResponseEntity<Cliente> atualizarCliente(@PathVariable UUID id, @RequestBody ClienteDTO clienteDTO) {
         Cliente clienteAtualizado = new Cliente();
         clienteAtualizado.setName(clienteDTO.getName());
         clienteAtualizado.setEmail(clienteDTO.getEmail());
