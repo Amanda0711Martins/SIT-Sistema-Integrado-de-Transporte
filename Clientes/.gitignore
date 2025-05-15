@@ -31,3 +31,9 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### keys ###
+#!**/src/main/**/st/
+#!**/src/main/**/st.pub/
+#/src/main/resources/st
+#/src/main/resources/st.pub

@@ -1,7 +1,7 @@
 package com.sit.sittransportadora.controller;
 
 import com.sit.sittransportadora.domain.Cliente;
-import com.sit.sittransportadora.dto.ClienteDTO;
+import com.sit.sittransportadora.controller.dto.ClienteDTO;
 import com.sit.sittransportadora.service.ClienteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
