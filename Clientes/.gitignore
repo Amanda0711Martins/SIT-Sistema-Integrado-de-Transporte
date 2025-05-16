@@ -33,7 +33,9 @@ build/
 .vscode/
 
 ### keys ###
-#!**/src/main/**/st/
-#!**/src/main/**/st.pub/
-#/src/main/resources/st
-#/src/main/resources/st.pub
+!**/src/main/**/jwt_rsa_pkcs8.pem/
+!**/src/main/**/jwt_rsa/
+/src/main/resources/jwt_rsa/
+/src/main/resources/jwt_rsa_pkcs8.pem
+*.pem
+jwt_rsa*
