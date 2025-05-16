@@ -11,11 +11,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.Set;
 
-//@Configuration
-public class AdminUserConfig
-//        implements CommandLineRunner
-        {
-
+@Configuration
+public class AdminUserConfig implements CommandLineRunner {
     private RoleRepository roleRepository;
     private ClienteRepository clienteRepository;
     private BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -26,33 +23,33 @@ public class AdminUserConfig
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
-//    @Override
-//    @Transactional
-//    public void run(String... args) throws Exception {
-//        var roleAdmin = roleRepository.findByName(Role.Values.ADMIN.name());
-//
-//        // Criar Role ADMIN se não existir
-//        if (roleAdmin == null) {
-//            Role adminRole = new Role();
-//            adminRole.setName(Role.Values.ADMIN.name());
-//            roleAdmin = roleRepository.save(adminRole);
-//        }
-//
-//        var userAdmin = clienteRepository.findByEmail("admin@admin.com");
-//
-//        Role finalRoleAdmin = (Role) roleAdmin;
-//
-//        userAdmin.ifPresentOrElse(
-//                user -> {
-//                    System.out.println("Admin já existe");
-//                },
-//                () -> {
-//                    var cliente = new Cliente();
-//                    cliente.setEmail("admin@admin.com");
-//                    cliente.setPassword(bCryptPasswordEncoder.encode("123"));
-//                    cliente.setRoles(Set.of(finalRoleAdmin)); // Corrigido: não usa null
-//                    clienteRepository.save(cliente);
-//                }
-//        );
-//    }
+    @Override
+    @Transactional
+    public void run(String... args) throws Exception {
+        var roleAdmin = roleRepository.findByName(Role.Values.ADMIN.name());
+
+        // Criar Role ADMIN se não existir
+        if (roleAdmin == null) {
+            Role adminRole = new Role();
+            adminRole.setName(Role.Values.ADMIN.name());
+            roleAdmin = roleRepository.save(adminRole);
+        }
+
+        var userAdmin = clienteRepository.findByEmail("admin@admin.com");
+
+        Role finalRoleAdmin = (Role) roleAdmin;
+
+        userAdmin.ifPresentOrElse(
+                user -> {
+                    System.out.println("Admin já existe");
+                },
+                () -> {
+                    var cliente = new Cliente();
+                    cliente.setEmail("admin@admin.com");
+                    cliente.setPassword(bCryptPasswordEncoder.encode("123"));
+                    cliente.setRoles(Set.of(finalRoleAdmin)); // Corrigido: não usa null
+                    clienteRepository.save(cliente);
+                }
+        );
+    }
 }
