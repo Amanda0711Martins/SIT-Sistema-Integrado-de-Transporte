@@ -1,0 +1,36 @@
+#!/bin/bash
+# Script para inicializar o repositório com Gitflow
+
+# Inicializar Git
+git init
+
+# Configurar Gitflow
+git flow init -d
+
+# Criar arquivos padrão
+echo "# Sistema de Logística" > README.md
+echo ".DS_Store" > .gitignore
+echo "node_modules/" >> .gitignore
+echo "target/" >> .gitignore
+echo ".env" >> .gitignore
+echo "*.log" >> .gitignore
+echo ".idea/" >> .gitignore
+echo ".vscode/" >> .gitignore
+
+# Fazer o commit inicial
+git add README.md .gitignore
+git commit -m "Commit inicial"
+
+# Criar a branch develop
+git checkout -b develop
+git push -u origin develop
+
+# Criar as branches principais
+echo "Criando branch de feature exemplo..."
+git flow feature start exemplo
+echo "// Código de exemplo" > exemplo.md
+git add exemplo.md
+git commit -m "Adiciona exemplo de feature"
+git flow feature finish exemplo
+
+echo "Gitflow inicializado com sucesso!"

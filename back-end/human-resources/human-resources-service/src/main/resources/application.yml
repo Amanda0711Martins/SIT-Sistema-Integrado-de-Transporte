@@ -1,0 +1,44 @@
+# application.yml
+spring:
+  application:
+    name: humanresources-service
+  profiles:
+    active: dev
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+    default-property-inclusion: non_null
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+
+server:
+  port: 8083
+  servlet:
+    context-path: /
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+  endpoint:
+    health:
+      show-details: when_authorized
+
+logging:
+  level:
+    com.logistics.hr: INFO
+    org.springframework: WARN
+
+hr:
+  encryption:
+    key: ${HR_ENCRYPTION_KEY:default-dev-key-replace-in-prod}

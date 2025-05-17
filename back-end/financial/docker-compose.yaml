@@ -1,0 +1,69 @@
+version: '3.8'
+
+services:
+  financial-db:
+    image: postgres:14-alpine
+    container_name: financial-db
+    environment:
+      POSTGRES_DB: financial_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5434:5432"
+    volumes:
+      - financial-data:/var/lib/postgresql/data
+    networks:
+      - logistics-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  financial-service:
+    build:
+      context: ./financial-service
+      dockerfile: Dockerfile
+    container_name: financial-service
+    depends_on:
+      - financial-db
+    environment:
+      DB_HOST: financial-db
+      DB_PORT: 5432
+      DB_NAME: financial_db
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      EUREKA_URI: http://discovery-server:8761/eureka
+      OAUTH_ISSUER_URI: http://keycloak:8180/auth/realms/logistics
+      SPRING_PROFILES_ACTIVE: docker
+    ports:
+      - "8083:8083"
+    networks:
+      - logistics-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8083/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    command: ["/wait-for-it.sh", "financial-db:5432", "--", "java", "-cp", "app:app/lib/*", "com.logistics.financial.FinancialServiceApplication"]
+
+  financial-frontend:
+    build:
+      context: ./financial-frontend
+      dockerfile: Dockerfile
+    container_name: financial-frontend
+    environment:
+      REACT_APP_API_URL: http://api-gateway:8080
+    ports:
+      - "3083:80"
+    depends_on:
+      - financial-service
+    networks:
+      - logistics-network
+
+networks:
+  logistics-network:
+    external: true
+
+volumes:
+  financial-data:

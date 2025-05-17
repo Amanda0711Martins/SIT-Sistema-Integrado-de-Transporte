@@ -1,0 +1,186 @@
+
+version: '3.8'
+
+services:
+  # API Gateway
+  api-gateway:
+    build: ./api-gateway
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - discovery-server
+      - auth-service
+      - cliente-service
+      - operacional-service
+      - financeiro-service
+      - rh-service
+      - frontend
+    networks:
+      - logistica-network
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Service Discovery
+  discovery-server:
+    build: ./discovery-server
+    ports:
+      - "8761:8761"
+    networks:
+      - logistica-network
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+
+  # Authentication Service
+  auth-service:
+    build: ./auth-service
+    depends_on:
+      - discovery-server
+      - postgres
+    networks:
+      - logistica-network
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/auth_db
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+
+  # Microsserviços
+  cliente-service:
+    build: ./cliente-service
+    depends_on:
+      - discovery-server
+      - postgres
+    networks:
+      - logistica-network
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/cliente_db
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+
+  operacional-service:
+    build: ./operacional-service
+    depends_on:
+      - discovery-server
+      - postgres
+    networks:
+      - logistica-network
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/operacional_db
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+
+  financeiro-service:
+    build: ./financeiro-service
+    depends_on:
+      - discovery-server
+      - postgres
+    networks:
+      - logistica-network
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/financeiro_db
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+
+  rh-service:
+    build: ./rh-service
+    depends_on:
+      - discovery-server
+      - postgres
+    networks:
+      - logistica-network
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/rh_db
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+
+  # Frontend
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    networks:
+      - logistica-network
+    environment:
+      - REACT_APP_API_BASE_URL=https://api.logistica.com
+
+  # Banco de Dados
+  postgres:
+    image: postgres:14-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_MULTIPLE_DATABASES=auth_db,cliente_db,operacional_db,financeiro_db,rh_db
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./scripts/init-multiple-dbs.sh:/docker-entrypoint-initdb.d/init-multiple-dbs.sh
+    networks:
+      - logistica-network
+
+  # Ferramentas de Monitoramento
+  prometheus:
+    image: prom/prometheus:v2.40.1
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - logistica-network
+
+  grafana:
+    image: grafana/grafana:9.2.6
+    ports:
+      - "3001:3000"
+    depends_on:
+      - prometheus
+    networks:
+      - logistica-network
+
+  # ELK Stack para Logging
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.7
+    ports:
+      - "9200:9200"
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+    networks:
+      - logistica-network
+
+  logstash:
+    image: docker.elastic.co/logstash/logstash:7.17.7
+    ports:
+      - "5044:5044"
+    volumes:
+      - ./monitoring/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
+    depends_on:
+      - elasticsearch
+    networks:
+      - logistica-network
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.17.7
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
+    networks:
+      - logistica-network
+
+networks:
+  logistica-network:
+    driver: bridge
+
+volumes:
+  postgres-data:

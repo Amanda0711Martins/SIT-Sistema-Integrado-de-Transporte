@@ -1,0 +1,63 @@
+# docker-compose.yml
+version: '3.8'
+
+services:
+  # HR Service Backend
+  hr-service:
+    build:
+      context: ./hr-service
+      dockerfile: Dockerfile
+    container_name: hr-service
+    ports:
+      - "8083:8083"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=hr_service
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=postgres
+      - HR_ENCRYPTION_KEY=production-encryption-key
+    depends_on:
+      - postgres
+    networks:
+      - logistics-network
+    restart: unless-stopped
+
+  # HR Service Frontend
+  hr-frontend:
+    build:
+      context: ./hr-frontend
+      dockerfile: Dockerfile
+    container_name: hr-frontend
+    ports:
+      - "8003:80"
+    depends_on:
+      - hr-service
+    networks:
+      - logistics-network
+    restart: unless-stopped
+
+  # PostgreSQL Database for HR Service
+  postgres:
+    image: postgres:14-alpine
+    container_name: hr-postgres
+    ports:
+      - "5433:5432"
+    environment:
+      - POSTGRES_DB=hr_service
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - hr-postgres-data:/var/lib/postgresql/data
+    networks:
+      - logistics-network
+    restart: unless-stopped
+
+networks:
+  logistics-network:
+    driver: bridge
+
+volumes:
+  hr-postgres-data:
+    driver: local
