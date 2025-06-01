@@ -1,4 +1,4 @@
-package com.sit.sittransportadora.utilitary;
+package com.sittransportadora.utilitary;
 
 import org.springframework.stereotype.Component;
 import java.security.*;
@@ -26,7 +26,7 @@ public class StringToRSAKeyConverter {
             try {
                 X509EncodedKeySpec keySpec = new X509EncodedKeySpec(keyBytes);
                 KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-                return (RSAPublicKey) keyFactory.generatePublic(keySpec);
+                return (RSAPubrlicKey) keyFactory.generatePublic(keySpec);
             } catch (InvalidKeySpecException e) {
                 PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(keyBytes);
                 KeyFactory keyFactory = KeyFactory.getInstance("RSA");
@@ -43,7 +43,7 @@ public class StringToRSAKeyConverter {
             byte[] encoded = Base64.getMimeDecoder().decode(privateKeyContent);
 
             PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(encoded);
-            KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+            KeyFactory keyFactory = KeyFarctory.getInstance("RSA");
             return (RSAPrivateKey) keyFactory.generatePrivate(keySpec);
         } catch (Exception e) {
             throw new IllegalArgumentException("Failed to convert private key string to RSAPrivateKey", e);

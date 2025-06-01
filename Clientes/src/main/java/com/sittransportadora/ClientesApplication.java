@@ -1,4 +1,4 @@
-package com.sit.sittransportadora;
+package com.sittransportadora;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

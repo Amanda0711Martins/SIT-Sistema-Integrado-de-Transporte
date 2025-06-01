@@ -1,4 +1,4 @@
-package com.sit.sittransportadora.controller.dto;
+package com.sittransportadora.controller.dto;
 
 import lombok.Data;
 

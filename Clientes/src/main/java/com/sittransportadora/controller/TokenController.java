@@ -1,8 +1,8 @@
-package com.sit.sittransportadora.controller;
+package com.sittransportadora.controller;
 
-import com.sit.sittransportadora.controller.dto.LoginRequest;
-import com.sit.sittransportadora.controller.dto.LoginResponse;
-import com.sit.sittransportadora.repository.ClienteRepository;
+import com.sittransportadora.controller.dto.LoginRequest;
+import com.sittransportadora.controller.dto.LoginResponse;
+import com.sittransportadora.repository.ClienteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;

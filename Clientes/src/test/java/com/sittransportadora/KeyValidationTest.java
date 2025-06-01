@@ -1,6 +1,6 @@
-package com.sit.sittransportadora;
+package com.sittransportadora;
 
-import com.sit.sittransportadora.utilitary.StringToRSAKeyConverter;
+import com.sittransportadora.utilitary.StringToRSAKeyConverter;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

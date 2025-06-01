@@ -1,6 +1,6 @@
-package com.sit.sittransportadora.domain;
+package com.sittransportadora.model;
 
-import com.sit.sittransportadora.controller.dto.LoginRequest;
+import com.sittransportadora.controller.dto.LoginRequest;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -13,6 +13,7 @@ import java.util.UUID;
 @Data
 public class Cliente {
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID uuid;
     private String name;
     private String cnpj;

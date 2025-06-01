@@ -1,6 +1,6 @@
-package com.sit.sittransportadora.config;
+package com.sittransportadora.config;
 
-import com.sit.sittransportadora.utilitary.StringToRSAKeyConverter;
+import com.sittransportadora.utilitary.StringToRSAKeyConverter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

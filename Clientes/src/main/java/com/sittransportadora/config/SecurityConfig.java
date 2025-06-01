@@ -1,17 +1,14 @@
-package com.sit.sittransportadora.config;
+package com.sittransportadora.config;
 
 import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
-import com.sit.sittransportadora.utilitary.StringToRSAKeyConverter;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
@@ -37,15 +34,28 @@ public class SecurityConfig {
     }
 
 
+//    @Bean
+//    protected SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+//        http
+//                .authorizeHttpRequests(authorizeRequests ->authorizeRequests.anyRequest().authenticated())
+//                .csrf(
+//                        csrf -> csrf.disable()
+//                )//not prod
+//                .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
+//                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+//        return http.build();
+//    }
+
     @Bean
-    protected SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .authorizeHttpRequests(authorizeRequests ->authorizeRequests.anyRequest().authenticated())
-                .csrf(
-                        csrf -> csrf.disable()
-                )//not prod
+                .csrf(csrf -> csrf.disable())
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/").permitAll() // permite acesso ao GET /
+                        .anyRequest().authenticated()
+                )
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+                .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         return http.build();
     }
 

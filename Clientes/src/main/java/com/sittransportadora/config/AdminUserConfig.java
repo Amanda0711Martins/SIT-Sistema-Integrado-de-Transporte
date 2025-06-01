@@ -1,9 +1,10 @@
-package com.sit.sittransportadora.config;
+package com.sittransportadora.config;
 
-import com.sit.sittransportadora.domain.Cliente;
-import com.sit.sittransportadora.domain.Role;
-import com.sit.sittransportadora.repository.ClienteRepository;
-import com.sit.sittransportadora.repository.RoleRepository;
+
+import com.sittransportadora.model.Cliente;
+import com.sittransportadora.model.Role;
+import com.sittransportadora.repository.ClienteRepository;
+import com.sittransportadora.repository.RoleRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;

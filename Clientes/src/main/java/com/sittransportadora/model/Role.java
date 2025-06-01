@@ -1,4 +1,4 @@
-package com.sit.sittransportadora.domain;
+package com.sittransportadora.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

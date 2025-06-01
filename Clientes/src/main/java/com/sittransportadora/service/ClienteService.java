@@ -1,7 +1,7 @@
-package com.sit.sittransportadora.service;
+package com.sittransportadora.service;
 
-import com.sit.sittransportadora.domain.Cliente;
-import com.sit.sittransportadora.repository.ClienteRepository;
+import com.sittransportadora.model.Cliente;
+import com.sittransportadora.repository.ClienteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

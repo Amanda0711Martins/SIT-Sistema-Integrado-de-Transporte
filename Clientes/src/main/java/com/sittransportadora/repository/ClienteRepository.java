@@ -1,6 +1,6 @@
-package com.sit.sittransportadora.repository;
+package com.sittransportadora.repository;
 
-import com.sit.sittransportadora.domain.Cliente;
+import com.sittransportadora.model.Cliente;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
