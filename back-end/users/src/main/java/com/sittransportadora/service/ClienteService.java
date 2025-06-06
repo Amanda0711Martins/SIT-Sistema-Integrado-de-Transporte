@@ -1,6 +1,6 @@
 package com.sittransportadora.service;
 
-import com.sittransportadora.model.Cliente;
+import com.sittransportadora.model.User;
 import com.sittransportadora.repository.ClienteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,23 +17,23 @@ public class ClienteService {
     private ClienteRepository clienteRepository;
 
 
-    public Cliente saveCliente(Cliente cliente){
-        cliente.setCreateDate(LocalDateTime.now());
-        return clienteRepository.save(cliente);
+    public User saveCliente(User user){
+        user.setCreateDate(LocalDateTime.now());
+        return clienteRepository.save(user);
     }
 
-    public List<Cliente> findAll(){
+    public List<User> findAll(){
         return clienteRepository.findAll();
     }
 
-    public Optional<Cliente> findById(UUID id)  {
-        Optional<Cliente> cliente = clienteRepository.findById(id);
+    public Optional<User> findById(UUID id)  {
+        Optional<User> cliente = clienteRepository.findById(id);
         return cliente;
     }
 
     //For now all data are updated
-    public Cliente updateCliente(UUID id, Cliente clienteAtualizado){
-        Optional<Cliente> cliente = clienteRepository.findById(id);
+    public User updateCliente(UUID id, User userAtualizado){
+        Optional<User> cliente = clienteRepository.findById(id);
         if(cliente.isPresent()){
             clienteRepository.save(cliente.get());
         }
@@ -41,7 +41,7 @@ public class ClienteService {
     }
 
     public void deleteCliente(UUID id){
-        Optional<Cliente> cliente = clienteRepository.findById(id);
+        Optional<User> cliente = clienteRepository.findById(id);
         if(cliente.isPresent()){
             clienteRepository.delete(cliente.get());
         }

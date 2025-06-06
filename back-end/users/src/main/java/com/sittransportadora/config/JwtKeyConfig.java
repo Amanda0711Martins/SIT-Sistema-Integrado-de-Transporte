@@ -25,4 +25,6 @@ public class JwtKeyConfig {
     public RSAPrivateKey rsaPrivateKey(StringToRSAKeyConverter keyReader) throws Exception {
         return keyReader.convertPriString(privateKey);
     }
+
+
 }

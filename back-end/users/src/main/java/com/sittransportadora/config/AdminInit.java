@@ -1,7 +1,7 @@
 package com.sittransportadora.config;
 
 
-import com.sittransportadora.model.Cliente;
+import com.sittransportadora.model.User;
 import com.sittransportadora.model.Role;
 import com.sittransportadora.repository.ClienteRepository;
 import com.sittransportadora.repository.RoleRepository;
@@ -13,12 +13,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import java.util.Set;
 
 @Configuration
-public class AdminUserConfig implements CommandLineRunner {
+public class AdminInit implements CommandLineRunner {
     private RoleRepository roleRepository;
     private ClienteRepository clienteRepository;
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    public AdminUserConfig(RoleRepository roleRepository, ClienteRepository clienteRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
+    public AdminInit(RoleRepository roleRepository, ClienteRepository clienteRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.roleRepository = roleRepository;
         this.clienteRepository = clienteRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
@@ -45,7 +45,7 @@ public class AdminUserConfig implements CommandLineRunner {
                     System.out.println("Admin já existe");
                 },
                 () -> {
-                    var cliente = new Cliente();
+                    var cliente = new User();
                     cliente.setEmail("admin@admin.com");
                     cliente.setPassword(bCryptPasswordEncoder.encode("123"));
                     cliente.setRoles(Set.of(finalRoleAdmin)); // Corrigido: não usa null

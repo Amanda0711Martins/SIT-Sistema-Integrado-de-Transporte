@@ -6,5 +6,5 @@ services:
     environment:
       - POSTGRES_USER=admin
       - POSTGRES_PASSWORD=123
-      - POSTGRES_DB=sitclientes
+      - POSTGRES_DB=situsers
 
