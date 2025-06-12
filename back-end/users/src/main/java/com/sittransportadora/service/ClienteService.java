@@ -31,6 +31,11 @@ public class ClienteService {
         return cliente;
     }
 
+    public Optional<User> findByEmail(String email)  {
+        Optional<User> cliente = clienteRepository.findByEmail(email);
+        return cliente;
+    }
+
     //For now all data are updated
     public User updateCliente(UUID id, User userAtualizado){
         Optional<User> cliente = clienteRepository.findById(id);

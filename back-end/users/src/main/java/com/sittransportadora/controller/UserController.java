@@ -5,29 +5,27 @@ import com.sittransportadora.controller.dto.UserDTO;
 import com.sittransportadora.service.ClienteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/user")
+@RequestMapping("/api/")
 public class UserController {
 
+    private final ClienteService clienteService;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+
     @Autowired
-    private ClienteService clienteService;
-
-    @PostMapping("/signup")
-    public ResponseEntity<User> signup(@RequestBody UserDTO userDTO) {
-        User user = new User();
-        user.setName(userDTO.getName());
-        user.setEmail(userDTO.getEmail());
-        user.setPhone(userDTO.getPhone());
-        user.setAddress(userDTO.getAddress());
-
-        User userSalvo = clienteService.saveCliente(user);
-        return ResponseEntity.ok(userSalvo);
+    public UserController(ClienteService clienteService, BCryptPasswordEncoder bCryptPasswordEncoder) {
+        this.clienteService = clienteService;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
+
+
+
 
     @GetMapping("/{id}")
     public ResponseEntity<User> obterCliente(@PathVariable UUID id) {

@@ -11,6 +11,7 @@ public class UserDTO {
     private String cpf;
     private String email;
     private String phone;
+    private String password;
     private String address;
 
     private LocalDateTime createDate;

@@ -52,9 +52,11 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.GET, "/").permitAll() // Apenas GET para a raiz
-                        .requestMatchers(HttpMethod.POST, "/login").permitAll() // Apenas POST para login
-                        .requestMatchers(HttpMethod.POST, "/register").permitAll() // Apenas POST para registro
+
+                        .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll() // Apenas POST para login
+                        .requestMatchers(HttpMethod.POST, "/api/auth/signup").permitAll() // Apenas POST para registro
+                        .requestMatchers("/api/admin/**").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers("/api/users/**").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
                         .anyRequest().authenticated()
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
