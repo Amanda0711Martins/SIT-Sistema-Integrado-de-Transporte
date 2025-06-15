@@ -8,11 +8,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/")
+@RequestMapping("/api/admin")
 public class UserController {
 
     private final ClienteService clienteService;
@@ -31,6 +32,12 @@ public class UserController {
     public ResponseEntity<User> obterCliente(@PathVariable UUID id) {
         Optional<User> cliente = clienteService.findById(id);
         return cliente != null ? ResponseEntity.ok().body(cliente.get()) : ResponseEntity.notFound().build();
+    }
+
+    @GetMapping("/users")
+    public ResponseEntity<List<User>> obterClientes(){
+        List<User> clientes = clienteService.findAll();
+        return ResponseEntity.ok().body(clientes);
     }
 
     @PutMapping("/{id}")

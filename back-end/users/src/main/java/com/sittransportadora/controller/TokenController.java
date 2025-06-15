@@ -5,15 +5,14 @@ import com.sittransportadora.controller.dto.LoginResponse;
 import com.sittransportadora.controller.dto.UserDTO;
 import com.sittransportadora.model.User;
 import com.sittransportadora.model.Role;
-import com.sittransportadora.repository.ClienteRepository;
 import com.sittransportadora.service.ClienteService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.sittransportadora.service.RoleService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.oauth2.jwt.Jwt;
+
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
@@ -24,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 
@@ -32,29 +32,35 @@ import java.util.stream.Collectors;
 public class TokenController {
 
     private final JwtEncoder jwtEncoder;
+    private final RoleService roleService;
     private ClienteService clienteService;
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
 
-    public TokenController(JwtEncoder jwtEncoder, ClienteService clienteService, BCryptPasswordEncoder bCryptPasswordEncoder) {
+    public TokenController(JwtEncoder jwtEncoder, ClienteService clienteService, BCryptPasswordEncoder bCryptPasswordEncoder, RoleService roleService) {
         this.jwtEncoder = jwtEncoder;
         this.clienteService = clienteService;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+        this.roleService = roleService;
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<User> signup(@RequestBody UserDTO userDTO) {
+    public ResponseEntity<UserDTO> signup(@RequestBody UserDTO userDTO) {
         User user = new User();
         user.setName(userDTO.getName());
         user.setEmail(userDTO.getEmail());
         user.setPhone(userDTO.getPhone());
         user.setAddress(userDTO.getAddress());
+        Role userRole = roleService.findByName(Role.Values.ROLE_USER.name())
+                .orElseThrow(() -> new RuntimeException("Erro: Role não encontrada."));
+
+        user.setRoles(Set.of(userRole));
         String encodedPassword = bCryptPasswordEncoder.encode(userDTO.getPassword());
         user.setPassword(encodedPassword);
 
         User userSalvo = clienteService.saveCliente(user);
-        userSalvo.setPassword("");
-        return ResponseEntity.ok(userSalvo);
+        userDTO.setPassword("");
+        return ResponseEntity.ok(userDTO);
     }
 
     @PostMapping("/login")
@@ -70,8 +76,9 @@ public class TokenController {
 
         var scopes = cliente.get().getRoles()
                 .stream()
-                .map(Role::getName) // Supondo que sua classe Role tenha um campo 'name' como "ROLE_ADMIN"
+                .map(Role::getName)
                 .collect(Collectors.joining(" "));
+
 
         var claims = JwtClaimsSet.builder()
                 .issuer("Backend")

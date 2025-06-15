@@ -27,13 +27,18 @@ public class AdminInit implements CommandLineRunner {
     @Override
     @Transactional
     public void run(String... args) throws Exception {
-        var roleAdmin = roleRepository.findByName(Role.Values.ADMIN.name());
-
+        var roleAdmin = roleRepository.findByName(Role.Values.ROLE_ADMIN.name());
+        var roleUser = roleRepository.findByName(Role.Values.ROLE_USER.name());
         // Criar Role ADMIN se não existir
         if (roleAdmin == null) {
             Role adminRole = new Role();
-            adminRole.setName(Role.Values.ADMIN.name());
-            roleAdmin = roleRepository.save(adminRole);
+            adminRole.setName(Role.Values.ROLE_ADMIN.name());
+            roleAdmin = (roleRepository.save(adminRole));
+        }
+        if (roleUser == null) {
+            Role userRole = new Role();
+            userRole.setName(Role.Values.ROLE_USER.name());
+            roleUser = (roleRepository.save(userRole));
         }
 
         var userAdmin = clienteRepository.findByEmail("admin@admin.com");

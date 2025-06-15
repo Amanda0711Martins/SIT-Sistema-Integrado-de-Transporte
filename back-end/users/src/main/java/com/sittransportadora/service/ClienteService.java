@@ -2,6 +2,7 @@ package com.sittransportadora.service;
 
 import com.sittransportadora.model.User;
 import com.sittransportadora.repository.ClienteRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +17,7 @@ public class ClienteService {
     @Autowired
     private ClienteRepository clienteRepository;
 
-
+    @Transactional
     public User saveCliente(User user){
         user.setCreateDate(LocalDateTime.now());
         return clienteRepository.save(user);
