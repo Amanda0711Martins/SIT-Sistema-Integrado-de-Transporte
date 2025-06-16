@@ -3,6 +3,9 @@ package com.sittransportadora.controller;
 import com.sittransportadora.controller.dto.LoginRequest;
 import com.sittransportadora.controller.dto.LoginResponse;
 import com.sittransportadora.controller.dto.UserDTO;
+import com.sittransportadora.controller.dto.userdto.AuthStatus;
+import com.sittransportadora.controller.dto.userdto.AuthStatusResponse;
+import com.sittransportadora.controller.dto.userdto.UserResponseRoleDTO;
 import com.sittransportadora.model.User;
 import com.sittransportadora.model.Role;
 import com.sittransportadora.service.ClienteService;
@@ -11,19 +14,18 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 
@@ -120,5 +122,26 @@ public class TokenController {
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, cookie.toString())
                 .build();
+    }
+    @GetMapping("/status")
+    public ResponseEntity<AuthStatus> getAuthStatus(Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.ok(new AuthStatus(false, null));
+        }
+
+        // O 'subject' do nosso token é o UUID do usuário.
+        String userUuid = authentication.getName();
+
+        // Busca o usuário completo no banco de dados para ter os dados atualizados.
+        return this.clienteService.findById(UUID.fromString(userUuid))
+                .map(user -> {
+                    // Converte a entidade User para um DTO seguro
+                    UserResponseRoleDTO userDTO = UserResponseRoleDTO.fromEntity(user);
+                    // Cria a resposta de sucesso
+                    AuthStatus response = new AuthStatus(true, userDTO);
+                    return ResponseEntity.ok(response);
+                })
+                // Se o UUID do token não corresponder a nenhum usuário no banco, retorna não autenticado.
+                .orElse(ResponseEntity.ok(new AuthStatus(false, null)));
     }
 }

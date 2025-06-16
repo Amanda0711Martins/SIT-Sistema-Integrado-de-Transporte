@@ -18,9 +18,13 @@ import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
+import java.util.Arrays;
 
 @Configuration
 @EnableWebSecurity
@@ -35,27 +39,16 @@ public class SecurityConfig {
         this.privateKey = privateKey;
     }
 
-
-//    @Bean
-//    protected SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-//        http
-//                .authorizeHttpRequests(authorizeRequests ->authorizeRequests.anyRequest().authenticated())
-//                .csrf(
-//                        csrf -> csrf.disable()
-//                )//not prod
-//                .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
-//                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-//        return http.build();
-//    }
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtDecoder jwtDecoder) throws Exception {
         JwtAuthenticationConverter converter = new JwtAuthenticationConverter();
 
         http
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(auth -> auth
-
+                .authorizeHttpRequests(auth ->
+                        auth.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                                .requestMatchers("api/auth/status").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll() // Apenas POST para login
                         .requestMatchers(HttpMethod.POST, "/api/auth/signup").permitAll() // Apenas POST para registro
                         .requestMatchers("/api/admin/**").hasAuthority("SCOPE_ROLE_ADMIN")
@@ -71,6 +64,24 @@ public class SecurityConfig {
 
         return http.build();
 
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        // A origem do seu frontend
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173"));
+        // Métodos permitidos
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        // Cabeçalhos permitidos
+        configuration.setAllowedHeaders(Arrays.asList("*"));
+        // Essencial para o seu fluxo de autenticação por cookies
+        configuration.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        // Aplica esta configuração para todas as rotas
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 
     @Bean
