@@ -18,7 +18,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class ClientesApplicationTests {
+class ClienteServiceTest {
 
     @Mock
     private ClienteRepository clienteRepository;
@@ -33,7 +33,7 @@ class ClientesApplicationTests {
     private ClienteService clienteService;
 
     @Test
-    void quandoSalvarCliente_deveEncodarSenhaESalvarNoRepositorio() {
+    void salvarClienteCriptografar() {
         User userToSave = new User();
         userToSave.setEmail("test@email.com");
         userToSave.setPassword("rawPassword123");

@@ -11,7 +11,8 @@ import java.util.UUID;
 
 @Entity
 @Data
-public class Cliente {
+@Table(name = "users")
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID uuid;
@@ -25,7 +26,7 @@ public class Cliente {
 
     @ManyToMany()
     @JoinTable(
-            name = "cliente_role",
+            name = "user_role",
             joinColumns = @JoinColumn(name = "cliente_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )

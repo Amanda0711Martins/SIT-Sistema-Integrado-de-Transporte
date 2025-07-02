@@ -16,8 +16,8 @@ public class Role {
     private String name;
     @Getter
     public enum Values{
-        ADMIN(1L),
-        USER(2L);
+        ROLE_ADMIN(1L),
+        ROLE_USER(2L);
 
         long value;
 
