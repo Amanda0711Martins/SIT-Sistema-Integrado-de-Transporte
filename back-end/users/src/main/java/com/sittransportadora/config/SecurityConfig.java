@@ -24,7 +24,6 @@ import java.security.interfaces.RSAPublicKey;
 @EnableWebSecurity
 public class SecurityConfig {
 
-
     private final RSAPublicKey publicKey;
     private final RSAPrivateKey privateKey;
 
@@ -33,28 +32,31 @@ public class SecurityConfig {
         this.privateKey = privateKey;
     }
 
-
-//    @Bean
-//    protected SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-//        http
-//                .authorizeHttpRequests(authorizeRequests ->authorizeRequests.anyRequest().authenticated())
-//                .csrf(
-//                        csrf -> csrf.disable()
-//                )//not prod
-//                .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
-//                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-//        return http.build();
-//    }
+    // @Bean
+    // protected SecurityFilterChain securityFilterChain(HttpSecurity http) throws
+    // Exception {
+    // http
+    // .authorizeHttpRequests(authorizeRequests
+    // ->authorizeRequests.anyRequest().authenticated())
+    // .csrf(
+    // csrf -> csrf.disable()
+    // )//not prod
+    // .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
+    // .sessionManagement(session ->
+    // session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+    // return http.build();
+    // }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/").permitAll() // permite acesso ao GET /
-                        .anyRequest().authenticated()
-                )
-                .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
+                        .requestMatchers("/").permitAll()
+                        .requestMatchers("/login").permitAll() // permite acesso ao GET /
+                        .anyRequest().authenticated())
+                .oauth2ResourceServer(oauth2 -> oauth2
+                        .jwt(jwt -> jwt.jwtAuthenticationConverter(new CustomJwtAuthenticationConverter())))
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         return http.build();
     }
@@ -65,15 +67,14 @@ public class SecurityConfig {
     }
 
     @Bean
-    public JwtDecoder jwtDecoder(){
+    public JwtDecoder jwtDecoder() {
         return NimbusJwtDecoder.withPublicKey(publicKey).build();
     }
 
     @Bean
-    public JwtEncoder jwtEncoder(){
+    public JwtEncoder jwtEncoder() {
         JWK jwk = new RSAKey.Builder(this.publicKey).privateKey(privateKey).build();
         var jwks = new ImmutableJWKSet<>(new JWKSet(jwk));
         return new NimbusJwtEncoder(jwks);
     }
 }
-

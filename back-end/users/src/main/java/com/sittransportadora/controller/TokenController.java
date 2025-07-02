@@ -2,6 +2,7 @@ package com.sittransportadora.controller;
 
 import com.sittransportadora.controller.dto.LoginRequest;
 import com.sittransportadora.controller.dto.LoginResponse;
+import com.sittransportadora.model.Role;
 import com.sittransportadora.repository.ClienteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.Instant;
 
-
 @RestController
 public class TokenController {
 
@@ -25,33 +25,38 @@ public class TokenController {
     private ClienteRepository clienteRepository;
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
-
-    public TokenController(JwtEncoder jwtEncoder, ClienteRepository clienteRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
+    public TokenController(JwtEncoder jwtEncoder, ClienteRepository clienteRepository,
+            BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.jwtEncoder = jwtEncoder;
         this.clienteRepository = clienteRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest){
+    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest) {
         var cliente = clienteRepository.findByEmail(loginRequest.email());
-        if(cliente.isEmpty() || cliente.get().isLoginCorrect(loginRequest,bCryptPasswordEncoder)){
+        if (cliente.isEmpty() || cliente.get().isLoginCorrect(loginRequest, bCryptPasswordEncoder)) {
             throw new BadCredentialsException("User or password is invalid");
         }
 
         var now = Instant.now();
         var expirensIn = 300L;
 
+        var roles = cliente.get().getRoles().stream()
+                .map(Role::getName)
+                .toList();
+
         var claims = JwtClaimsSet.builder()
                 .issuer("Backend")
                 .subject(cliente.get().getUuid().toString())
+                .claim("roles", roles)
                 .expiresAt(now.plusSeconds(expirensIn))
                 .issuedAt(now)
                 .build();
 
         var jwtValue = jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
 
-        return ResponseEntity.ok(new LoginResponse(jwtValue,expirensIn));
+        return ResponseEntity.ok(new LoginResponse(jwtValue, expirensIn));
 
     }
 }
