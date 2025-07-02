@@ -1,4 +1,4 @@
-package com.sittransportadora.controller.dto;
+package com.sittransportadora.controller.dto.userdto;
 
 import lombok.Data;
 

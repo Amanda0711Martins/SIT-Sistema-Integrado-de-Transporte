@@ -1,9 +1,10 @@
 package com.sittransportadora.model;
 
-import com.sittransportadora.controller.dto.LoginRequest;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
+import com.sittransportadora.controller.dto.userdto.LoginRequest;
 
 import java.time.LocalDateTime;
 import java.util.Set;

@@ -1,17 +1,13 @@
 package com.sittransportadora.controller;
 
-import com.sittransportadora.controller.dto.LoginRequest;
-import com.sittransportadora.controller.dto.LoginResponse;
 import com.sittransportadora.model.Role;
-import com.sittransportadora.repository.ClienteRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import com.sittransportadora.controller.dto.UserDTO;
 import com.sittransportadora.controller.dto.userdto.AuthStatus;
-import com.sittransportadora.controller.dto.userdto.AuthStatusResponse;
+import com.sittransportadora.controller.dto.userdto.LoginRequest;
+import com.sittransportadora.controller.dto.userdto.LoginResponse;
+import com.sittransportadora.controller.dto.userdto.UserDTO;
 import com.sittransportadora.controller.dto.userdto.UserResponseRoleDTO;
 import com.sittransportadora.model.User;
-import com.sittransportadora.model.Role;
-import com.sittransportadora.service.ClienteService;
+import com.sittransportadora.service.UserService;
 import com.sittransportadora.service.RoleService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
@@ -37,11 +33,11 @@ public class TokenController {
 
     private final JwtEncoder jwtEncoder;
     private final RoleService roleService;
-    private ClienteService clienteService;
+    private UserService clienteService;
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
 
-    public TokenController(JwtEncoder jwtEncoder, ClienteService clienteService, BCryptPasswordEncoder bCryptPasswordEncoder, RoleService roleService) {
+    public TokenController(JwtEncoder jwtEncoder, UserService clienteService, BCryptPasswordEncoder bCryptPasswordEncoder, RoleService roleService) {
         this.jwtEncoder = jwtEncoder;
         this.clienteService = clienteService;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
@@ -62,7 +58,7 @@ public class TokenController {
         String encodedPassword = bCryptPasswordEncoder.encode(userDTO.getPassword());
         user.setPassword(encodedPassword);
 
-        User userSalvo = clienteService.saveCliente(user);
+        User userSalvo = clienteService.saveUser(user);
         userDTO.setPassword("");
         return ResponseEntity.ok(userDTO);
     }

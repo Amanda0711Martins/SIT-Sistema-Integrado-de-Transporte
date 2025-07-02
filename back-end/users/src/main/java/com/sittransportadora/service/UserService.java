@@ -2,7 +2,7 @@ package com.sittransportadora.service;
 
 import com.sittransportadora.model.Role;
 import com.sittransportadora.model.User;
-import com.sittransportadora.repository.ClienteRepository;
+import com.sittransportadora.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -15,52 +15,52 @@ import java.util.Set;
 import java.util.UUID;
 
 @Service
-public class ClienteService {
+public class UserService {
 
     @Autowired
-    private ClienteRepository clienteRepository;
+    private UserRepository userRepository;
 
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
     @Transactional
-    public User saveCliente(User user) {
+    public User saveUser(User user) {
         user.setCreateDate(LocalDateTime.now());
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         Role role = new Role();
         role.setName(Role.Values.ROLE_USER.name());
         user.setRoles(Set.of(role));
-        return clienteRepository.save(user);
+        return userRepository.save(user);
     }
 
     public List<User> findAll() {
-        return clienteRepository.findAll();
+        return userRepository.findAll();
     }
 
     public Optional<User> findById(UUID id) {
-        return clienteRepository.findById(id);
+        return userRepository.findById(id);
 
     }
 
     public Optional<User> findByEmail(String email) {
-        Optional<User> cliente = clienteRepository.findByEmail(email);
-        return cliente;
+        Optional<User> user = userRepository.findByEmail(email);
+        return user;
     }
 
-    public User updateCliente(UUID id, User userAtualizado) {
-        return clienteRepository.findById(id)
+    public User updateUser(UUID id, User userAtualizado) {
+        return userRepository.findById(id)
                 .map(existingUser -> {
                     existingUser.setName(userAtualizado.getName());
                     existingUser.setEmail(userAtualizado.getEmail());
                     existingUser.setPassword(passwordEncoder.encode(userAtualizado.getPassword()));
-                    return clienteRepository.save(existingUser);
+                    return userRepository.save(existingUser);
                 })
                 .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado"));
     }
 
-    public void deleteCliente(UUID id) {
-        User cliente = clienteRepository.findById(id)
+    public void deleteUser(UUID id) {
+        User user = userRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado"));
-        clienteRepository.delete(cliente);
+        userRepository.delete(user);
     }
 }

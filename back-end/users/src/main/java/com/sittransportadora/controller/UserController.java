@@ -1,8 +1,8 @@
 package com.sittransportadora.controller;
 
+import com.sittransportadora.controller.dto.userdto.UserDTO;
 import com.sittransportadora.model.User;
-import com.sittransportadora.controller.dto.UserDTO;
-import com.sittransportadora.service.ClienteService;
+import com.sittransportadora.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -16,11 +16,11 @@ import java.util.UUID;
 @RequestMapping("/api/admin")
 public class UserController {
 
-    private final ClienteService clienteService;
+    private final UserService clienteService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Autowired
-    public UserController(ClienteService clienteService, BCryptPasswordEncoder bCryptPasswordEncoder) {
+    public UserController(UserService clienteService, BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.clienteService = clienteService;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
@@ -29,26 +29,26 @@ public class UserController {
 
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> obterCliente(@PathVariable UUID id) {
+    public ResponseEntity<User> obterUser(@PathVariable UUID id) {
         Optional<User> cliente = clienteService.findById(id);
         return cliente != null ? ResponseEntity.ok().body(cliente.get()) : ResponseEntity.notFound().build();
     }
 
     @GetMapping("/users")
-    public ResponseEntity<List<User>> obterClientes(){
+    public ResponseEntity<List<User>> obterUsers(){
         List<User> clientes = clienteService.findAll();
         return ResponseEntity.ok().body(clientes);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<User> atualizarCliente(@PathVariable UUID id, @RequestBody UserDTO userDTO) {
+    public ResponseEntity<User> atualizarUser(@PathVariable UUID id, @RequestBody UserDTO userDTO) {
         User userAtualizado = new User();
         userAtualizado.setName(userDTO.getName());
         userAtualizado.setEmail(userDTO.getEmail());
         userAtualizado.setPhone(userDTO.getPhone());
         userAtualizado.setAddress(userDTO.getAddress());
 
-        User user = clienteService.updateCliente(id, userAtualizado);
+        User user = clienteService.updateUser(id, userAtualizado);
         return user != null ? ResponseEntity.ok(user) : ResponseEntity.notFound().build();
     }
 

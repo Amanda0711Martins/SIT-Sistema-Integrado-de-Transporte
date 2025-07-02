@@ -1,6 +1,6 @@
 package com.sittransportadora.service;
 
-import com.sittransportadora.model.Cliente;
+import com.sittransportadora.model.User;
 import com.sittransportadora.repository.ClienteRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
