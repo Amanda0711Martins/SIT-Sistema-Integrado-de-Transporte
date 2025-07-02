@@ -53,7 +53,7 @@ public class TokenController {
         user.setAddress(userDTO.getAddress());
         Role userRole = roleService.findByName(Role.Values.ROLE_USER.name())
                 .orElseThrow(() -> new RuntimeException("Erro: Role não encontrada."));
-
+        System.out.println("ROLE ID: " + userRole.getId()); // ⚠️ DEVE imprimir um número
         user.setRoles(Set.of(userRole));
         String encodedPassword = bCryptPasswordEncoder.encode(userDTO.getPassword());
         user.setPassword(encodedPassword);

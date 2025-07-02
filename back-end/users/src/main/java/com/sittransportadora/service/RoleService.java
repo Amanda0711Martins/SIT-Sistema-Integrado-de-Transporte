@@ -14,7 +14,7 @@ public class RoleService {
     @Autowired
     private RoleRepository roleRepository;
 
-    public Role saveRole(Role role) {
+    public Role save(Role role) {
         return roleRepository.save(role);
     }
 
@@ -23,11 +23,11 @@ public class RoleService {
     }
 
     public Optional<Role> findById(Long id) {
-        return roleRepository.findById(id);
+        return roleRepository.findById(id) ;
     }
 
     public Optional<Role> findByName(String name) {
-        return Optional.ofNullable((Role) roleRepository.findByName(name));
+        return Optional.of(roleRepository.findByName(name));
     }
 
     public void deleteRole(Long id) {

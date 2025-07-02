@@ -2,7 +2,7 @@ package com.sittransportadora.config;
 
 import com.sittransportadora.model.Role;
 import com.sittransportadora.model.User;
-import com.sittransportadora.repository.ClienteRepository;
+import com.sittransportadora.repository.UserRepository;
 import com.sittransportadora.repository.RoleRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.boot.CommandLineRunner;
@@ -14,10 +14,10 @@ import java.util.Set;
 @Configuration
 public class AdminInit implements CommandLineRunner {
     private RoleRepository roleRepository;
-    private ClienteRepository clienteRepository;
+    private UserRepository clienteRepository;
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    public AdminInit(RoleRepository roleRepository, ClienteRepository clienteRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
+    public AdminInit(RoleRepository roleRepository, UserRepository clienteRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.roleRepository = roleRepository;
         this.clienteRepository = clienteRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;

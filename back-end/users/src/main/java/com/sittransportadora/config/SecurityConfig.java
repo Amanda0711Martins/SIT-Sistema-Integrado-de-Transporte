@@ -47,9 +47,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth ->
                         auth.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                                .requestMatchers("api/auth/status").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll() // Apenas POST para login
-                        .requestMatchers(HttpMethod.POST, "/api/auth/signup").permitAll() // Apenas POST para registro
+                        .requestMatchers(HttpMethod.POST, "/api/auth/**").permitAll() // Apenas POST para login
                         .requestMatchers("/api/admin/**").hasAuthority("SCOPE_ROLE_ADMIN")
                         .requestMatchers("/api/users/**").hasAnyAuthority("SCOPE_ROLE_USER", "SCOPE_ROLE_ADMIN")
                         .anyRequest().authenticated()
