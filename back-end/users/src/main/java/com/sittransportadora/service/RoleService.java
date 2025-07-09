@@ -2,6 +2,9 @@ package com.sittransportadora.service;
 
 import com.sittransportadora.model.Role;
 import com.sittransportadora.repository.RoleRepository;
+
+import jakarta.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +17,7 @@ public class RoleService {
     @Autowired
     private RoleRepository roleRepository;
 
+    @Transactional
     public Role save(Role role) {
         return roleRepository.save(role);
     }
@@ -26,8 +30,9 @@ public class RoleService {
         return roleRepository.findById(id) ;
     }
 
-    public Optional<Role> findByName(String name) {
-        return Optional.of(roleRepository.findByName(name));
+   public Role findByName(String name) {
+        return roleRepository.findByName(name)
+                .orElseThrow(() -> new RuntimeException("ERRO: A Role '" + name + "' não foi encontrada no banco de dados."));
     }
 
     public void deleteRole(Long id) {

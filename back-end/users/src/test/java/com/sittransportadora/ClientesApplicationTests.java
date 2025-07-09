@@ -1,9 +1,10 @@
 package com.sittransportadora;
 
 import com.sittransportadora.model.User;
-import com.sittransportadora.repository.ClienteRepository;
 import com.sittransportadora.repository.RoleRepository;
-import com.sittransportadora.service.ClienteService;
+import com.sittransportadora.repository.UserRepository;
+import com.sittransportadora.service.UserService;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -21,7 +22,7 @@ import static org.mockito.Mockito.*;
 class ClientesApplicationTests {
 
     @Mock
-    private ClienteRepository clienteRepository;
+    private UserRepository clienteRepository;
 
     @Mock
     private BCryptPasswordEncoder passwordEncoder;
@@ -30,7 +31,7 @@ class ClientesApplicationTests {
     private RoleRepository roleRepository;
 
     @InjectMocks
-    private ClienteService clienteService;
+    private UserService userService;
 
     @Test
     void quandoSalvarCliente_deveEncodarSenhaESalvarNoRepositorio() {
@@ -41,7 +42,7 @@ class ClientesApplicationTests {
         when(passwordEncoder.encode("rawPassword123")).thenReturn("encodedPassword");
         when(clienteRepository.save(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        User savedUser = clienteService.saveCliente(userToSave);
+        User savedUser = userService.saveUser(userToSave);
 
         assertNotNull(savedUser);
         assertEquals("encodedPassword", savedUser.getPassword());
@@ -55,7 +56,7 @@ class ClientesApplicationTests {
         String email = "notfound@email.com";
         when(clienteRepository.findByEmail(email)).thenReturn(Optional.empty());
 
-        Optional<User> foundUser = clienteService.findByEmail(email);
+        Optional<User> foundUser = userService.findByEmail(email);
 
         assertTrue(foundUser.isEmpty());
         verify(clienteRepository, times(1)).findByEmail(email);

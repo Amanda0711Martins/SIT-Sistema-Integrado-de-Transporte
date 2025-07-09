@@ -2,58 +2,66 @@ package com.sittransportadora.config;
 
 import com.sittransportadora.model.Role;
 import com.sittransportadora.model.User;
-import com.sittransportadora.repository.UserRepository;
 import com.sittransportadora.repository.RoleRepository;
-import jakarta.transaction.Transactional;
+import com.sittransportadora.repository.UserRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Set;
 
 @Configuration
 public class AdminInit implements CommandLineRunner {
-    private RoleRepository roleRepository;
-    private UserRepository clienteRepository;
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    public AdminInit(RoleRepository roleRepository, UserRepository clienteRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
+    private final RoleRepository roleRepository;
+    private final UserRepository userRepository;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    public AdminInit(RoleRepository roleRepository, UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.roleRepository = roleRepository;
-        this.clienteRepository = clienteRepository;
+        this.userRepository = userRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
     @Override
     @Transactional
     public void run(String... args) throws Exception {
-        var roleAdmin = roleRepository.findByName(Role.Values.ROLE_ADMIN.name());
-        var roleUser = roleRepository.findByName(Role.Values.ROLE_USER.name());
-        // Criar Role ADMIN se não existir
-        if (roleAdmin == null) {
+        // --- CRIAÇÃO DAS ROLES ---
+        // 1. Verifica se a role ADMIN não existe usando .isEmpty()
+        if (roleRepository.findByName(Role.Values.ROLE_ADMIN.name()).isEmpty()) {
             Role adminRole = new Role();
             adminRole.setName(Role.Values.ROLE_ADMIN.name());
-            roleAdmin = (roleRepository.save(adminRole));
+            roleRepository.save(adminRole);
+            System.out.println("Role ADMIN criada.");
         }
-        if (roleUser == null) {
+
+        // 2. Verifica se a role USER não existe usando .isEmpty()
+        if (roleRepository.findByName(Role.Values.ROLE_USER.name()).isEmpty()) {
             Role userRole = new Role();
             userRole.setName(Role.Values.ROLE_USER.name());
-            roleUser = (roleRepository.save(userRole));
+            roleRepository.save(userRole);
+            System.out.println("Role USER criada.");
         }
-        //Cria conta admin para testes
-        var userAdmin = clienteRepository.findByEmail("admin@admin.com");
-        Role finalRoleAdmin = (Role) roleAdmin;
-        userAdmin.ifPresentOrElse(
-                user -> {
-                    System.out.println("Admin já existe");
-                },
-                () -> {
-                    var cliente = new User();
-                    cliente.setEmail("admin@admin.com");
-                    cliente.setPassword(bCryptPasswordEncoder.encode("123"));
-                    cliente.setRoles(Set.of(finalRoleAdmin)); // Corrigido: não usa null
-                    clienteRepository.save(cliente);
-                });
 
-        
+        // --- CRIAÇÃO DO USUÁRIO ADMIN ---
+        // 3. Verifica se o usuário admin já existe
+        userRepository.findByEmail("admin@admin.com").ifPresentOrElse(
+            user -> System.out.println("Usuário admin já existe."),
+            () -> {
+                System.out.println("Criando usuário admin...");
+                User adminUser = new User();
+                adminUser.setEmail("admin@admin.com");
+                adminUser.setPassword(bCryptPasswordEncoder.encode("123"));
+
+                // 4. Busca a role ADMIN do banco e "desembrulha" o Optional
+                Role adminRole = roleRepository.findByName(Role.Values.ROLE_ADMIN.name())
+                                               .orElseThrow(() -> new RuntimeException("Erro fatal: Role ADMIN não encontrada após a criação."));
+
+                adminUser.setRoles(Set.of(adminRole));
+                userRepository.save(adminUser);
+                System.out.println("Usuário admin criado com sucesso.");
+            }
+        );
     }
 }

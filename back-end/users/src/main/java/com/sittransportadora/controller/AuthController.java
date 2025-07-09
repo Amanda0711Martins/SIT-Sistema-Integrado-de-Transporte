@@ -8,6 +8,10 @@ import com.sittransportadora.controller.dto.userdto.UserDTO;
 import com.sittransportadora.controller.dto.userdto.UserResponseRoleDTO;
 import com.sittransportadora.model.User;
 import com.sittransportadora.service.UserService;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+
 import com.sittransportadora.service.RoleService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
@@ -29,15 +33,17 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/auth")
-public class TokenController {
+public class AuthController {
 
     private final JwtEncoder jwtEncoder;
     private final RoleService roleService;
     private UserService clienteService;
     private BCryptPasswordEncoder bCryptPasswordEncoder;
+    @PersistenceContext
+    private EntityManager entityManager;
 
-
-    public TokenController(JwtEncoder jwtEncoder, UserService clienteService, BCryptPasswordEncoder bCryptPasswordEncoder, RoleService roleService) {
+    public AuthController(JwtEncoder jwtEncoder, UserService clienteService,
+            BCryptPasswordEncoder bCryptPasswordEncoder, RoleService roleService) {
         this.jwtEncoder = jwtEncoder;
         this.clienteService = clienteService;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
@@ -51,34 +57,35 @@ public class TokenController {
         user.setEmail(userDTO.getEmail());
         user.setPhone(userDTO.getPhone());
         user.setAddress(userDTO.getAddress());
-        Role userRole = roleService.findByName(Role.Values.ROLE_USER.name())
-                .orElseThrow(() -> new RuntimeException("Erro: Role não encontrada."));
-        System.out.println("ROLE ID: " + userRole.getId()); // ⚠️ DEVE imprimir um número
-        user.setRoles(Set.of(userRole));
+        user.setRoles(Set.of(new Role()));
         String encodedPassword = bCryptPasswordEncoder.encode(userDTO.getPassword());
         user.setPassword(encodedPassword);
+        System.out.println("Saving user with role: " + user.getRoles());
+        user.getRoles().forEach(r -> {
+            System.out.println("  - Role ID: " + r.getId() + ", name: " + r.getName());
+            System.out.println("  - Is managed? " + entityManager.contains(r));
+        });
 
-        User userSalvo = clienteService.saveUser(user);
+        clienteService.saveUser(user);
         userDTO.setPassword("");
         return ResponseEntity.ok(userDTO);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest){
+    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest) {
         var cliente = clienteService.findByEmail(loginRequest.email());
-        if(cliente.isEmpty() || !cliente.get().isLoginCorrect(loginRequest,bCryptPasswordEncoder)){
+        if (cliente.isEmpty() || !cliente.get().isLoginCorrect(loginRequest, bCryptPasswordEncoder)) {
             throw new BadCredentialsException("User or password is invalid");
         }
 
         var now = Instant.now();
-        //5 minutos
+        // 5 minutos
         var expirensIn = 300L;
 
         var scopes = cliente.get().getRoles()
                 .stream()
                 .map(Role::getName)
                 .collect(Collectors.joining(" "));
-
 
         var claims = JwtClaimsSet.builder()
                 .issuer("Backend")
@@ -90,11 +97,11 @@ public class TokenController {
                 .build();
 
         var jwtValue = jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
-        //O cookie não pode ser acessado por javascript
-        //Válido p/ todas as rotas
+        // O cookie não pode ser acessado por javascript
+        // Válido p/ todas as rotas
         ResponseCookie cookie = ResponseCookie.from("jwt-token", jwtValue)
                 .httpOnly(true)
-//                .secure(true) exige https em produção
+                // .secure(true) exige https em produção
                 .path("/")
                 .maxAge(Duration.ofSeconds(expirensIn))
                 .sameSite("Strict")
@@ -103,10 +110,10 @@ public class TokenController {
         // 2. Retorne o cookie no cabeçalho da resposta
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, cookie.toString())
-                .body(new LoginResponse("",expirensIn));
-
+                .body(new LoginResponse("", expirensIn));
 
     }
+
     @PostMapping("/logout")
     public ResponseEntity<Void> logout() {
         // Cria um cookie com o mesmo nome, mas com valor vazio e tempo de vida 0
@@ -122,6 +129,7 @@ public class TokenController {
                 .header(HttpHeaders.SET_COOKIE, cookie.toString())
                 .build();
     }
+
     @GetMapping("/status")
     public ResponseEntity<AuthStatus> getAuthStatus(Authentication authentication) {
         if (authentication == null || !authentication.isAuthenticated()) {
@@ -140,7 +148,8 @@ public class TokenController {
                     AuthStatus response = new AuthStatus(true, userDTO);
                     return ResponseEntity.ok(response);
                 })
-                // Se o UUID do token não corresponder a nenhum usuário no banco, retorna não autenticado.
+                // Se o UUID do token não corresponder a nenhum usuário no banco, retorna não
+                // autenticado.
                 .orElse(ResponseEntity.ok(new AuthStatus(false, null)));
     }
 }
