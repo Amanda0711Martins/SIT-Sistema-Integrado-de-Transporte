@@ -1,4 +1,4 @@
-package com.logistics.financial.controller;
+package com.logistica.financial.controller;
 
 import com.logistics.financial.dto.InvoiceDTO;
 import com.logistics.financial.service.InvoiceService;
@@ -11,7 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
+import javax.Validation.Valid;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -22,6 +22,7 @@ import java.util.List;
 public class InvoiceController {
 
     private final InvoiceService invoiceService;
+    
 
     @PostMapping
     public ResponseEntity<InvoiceDTO> createInvoice(@Valid @RequestBody InvoiceDTO invoiceDTO) {

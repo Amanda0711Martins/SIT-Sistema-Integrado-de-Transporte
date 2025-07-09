@@ -1,14 +1,15 @@
-package com.logistics.financial.service;
+package com.logistica.financial.service;
 
-import com.logistics.financial.dto.BillingDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+
+import com.logistics.financial.dto.BillingDTO;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 public interface BillingService {
-    BillingDTO createBilling(BillingDTO billingDTO);
+    BillingDTO createBilling(BillingDTOgDTO billingDTO);
     BillingDTO getBillingById(Long id);
     BillingDTO getBillingByNumber(String billingNumber);
     Page<BillingDTO> getAllBillings(Pageable pageable);

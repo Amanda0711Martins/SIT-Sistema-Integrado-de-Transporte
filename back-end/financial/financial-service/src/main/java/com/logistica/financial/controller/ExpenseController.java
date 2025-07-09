@@ -1,7 +1,5 @@
-package com.logistics.financial.controller;
+package com.logistica.financial.controller;
 
-import com.logistics.financial.dto.ExpenseDTO;
-import com.logistics.financial.service.ExpenseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -11,7 +9,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
+import com.logistica.financial.dto.ExpenseDTO;
+import com.logistics.financial.service.ExpenseService;
+
+import jakarta.validation.Valid;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
