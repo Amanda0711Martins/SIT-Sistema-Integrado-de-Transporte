@@ -1,11 +1,12 @@
 package com.logistica.customer.dto;
 
 import com.logistica.customer.model.Customer;
+
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.*;
 import java.time.LocalDateTime;
 
 @Data
