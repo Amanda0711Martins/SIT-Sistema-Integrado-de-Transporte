@@ -1,15 +1,7 @@
+# Define os serviços (contêineres)
 services:
 
-  discovery:
-    image: eurekaserver:latest
-    build:
-      context: ./discovery
-    container_name: discovery
-    ports:
-      - "8761:8761"
-    networks:
-      - sitnetwork
-
+  # Serviço do Banco de Dados PostgreSQL
   db:
     image: postgres:15
     container_name: customer-db
@@ -18,29 +10,32 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     ports:
+      # Expõe a porta 5433 no seu computador, mapeando para a 5432 do contêiner
       - "5433:5432"
     volumes:
       - customer_db_data:/var/lib/postgresql/data
     networks:
       - sitnetwork
 
+  # Serviço da sua aplicação Customer
   customer-service:
     build:
-      context: ./customer-service
-    container_name: customer-service
+      context: .
+    container_name: customer-service # Adicionado para consistência
     depends_on:
       - db
-      - discovery
     ports:
       - "8081:8081"
     env_file:
-      - ./.env
+      - .env
     networks:
       - sitnetwork
 
+# Define a rede que permite a comunicação entre os contêineres
 networks:
   sitnetwork:
     driver: bridge
 
+# Define o volume para persistir os dados do banco de dados
 volumes:
   customer_db_data:

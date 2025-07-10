@@ -16,6 +16,18 @@ spring:
             jmjhnBvseNqywxOLN7K5OzRluz3zOE3UKQqCdR4H84JYCT86H0eYxW6V5F1yKykS
             vwIDAQAB
             -----END PUBLIC KEY-----
+  jwt:
+    public:
+      key: |
+            -----BEGIN PUBLIC KEY-----
+            MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAnLFPHhnpHYdTrKI74h4F
+            9lPZ6O4czHFdInHNbuKPt+Ngr9TXQb1jEGnWXnrq65+tiUznP32i+ddOMuuYhd6i
+            PMcBRcL6WgKOxi2LBHN6V5jipm7mahNjsqGYaZvQaHm5y2gmDKgWIn+0uEy9D3Lb
+            8LowUcAA3zeBDzKJB4AMjcFjdRkewNcTCbObJa9WDs05EtMVhE3/SAtvhVjo2/SE
+            Wkoxtg6jN5pN3uOKO3MCicyz6MLTl2ne5uplxfgPMSxC0yFl/kHsLCQNAOww5RR/
+            jmjhnBvseNqywxOLN7K5OzRluz3zOE3UKQqCdR4H84JYCT86H0eYxW6V5F1yKykS
+            vwIDAQAB
+            -----END PUBLIC KEY-----
   application:
     name: customer-service
   datasource:
