@@ -1,4 +1,4 @@
-package com.logistica.utilitary;
+package com.logistica.customer.utilitary;
 
 import org.springframework.stereotype.Component;
 import java.security.*;

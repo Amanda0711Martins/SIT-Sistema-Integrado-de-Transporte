@@ -1,8 +1,0 @@
-  discovery:
-    build:
-      context: ../../discovery-server
-    container_name: discovery
-    ports:
-      - "8761:8761"
-    networks:
-      - sit-network

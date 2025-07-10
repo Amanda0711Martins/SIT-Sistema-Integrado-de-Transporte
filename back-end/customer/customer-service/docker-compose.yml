@@ -23,18 +23,25 @@ services:
       context: .
     container_name: customer-service # Adicionado para consistência
     depends_on:
-      - db
+      - discovery
     ports:
       - "8081:8081"
     env_file:
       - .env
     networks:
       - sitnetwork
+    environment:
+      - EUREKA_HOST=discovery
+      - EUREKA_PORT=8761
+      - DB_HOST=db
+      - DB_NAME=customer_db
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=postgres
 
 # Define a rede que permite a comunicação entre os contêineres
 networks:
   sitnetwork:
-    driver: bridge
+    external: true
 
 # Define o volume para persistir os dados do banco de dados
 volumes:

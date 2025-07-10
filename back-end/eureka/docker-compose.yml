@@ -1,0 +1,13 @@
+services:
+  discovery:
+    build:
+      context: .
+    container_name: eureka
+    ports:
+      - "8761:8761"
+    networks:
+      - sit-network
+
+networks:
+  sit-network:
+    driver: bridge
