@@ -1,33 +1,25 @@
-FROM openjdk:17-jdk-slim as build
-WORKDIR /workspace/app
+# --- Estágio 1: Build da Aplicação ---
+FROM eclipse-temurin:17-jdk-alpine AS builder
 
-# Copy maven executable and pom.xml
-COPY mvnw .
-COPY .mvn .mvn
-COPY pom.xml .
+WORKDIR /app
 
-# Make the maven wrapper executable
-RUN chmod +x ./mvnw
+COPY .mvn/ .mvn
+COPY mvnw pom.xml ./
 
-# Download dependencies
-RUN ./mvnw dependency:go-offline -B
+RUN ./mvnw dependency:go-offline
 
-# Copy source code
-COPY src src
+COPY src ./src
 
-# Build the application
 RUN ./mvnw package -DskipTests
-RUN mkdir -p target/dependency && (cd target/dependency; jar -xf ../*.jar)
 
-FROM openjdk:17-jdk-slim
-VOLUME /tmp
-ARG DEPENDENCY=/workspace/app/target/dependency
-COPY --from=build ${DEPENDENCY}/BOOT-INF/lib /app/lib
-COPY --from=build ${DEPENDENCY}/META-INF /app/META-INF
-COPY --from=build ${DEPENDENCY}/BOOT-INF/classes /app
 
-# Add wait-for-it script to wait for database
-ADD https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh /wait-for-it.sh
-RUN chmod +x /wait-for-it.sh
+# --- Estágio 2: Imagem Final ---
+FROM eclipse-temurin:17-jre-alpine
 
-ENTRYPOINT ["java","-cp","app:app/lib/*","com.logistics.financial.FinancialServiceApplication"]
+WORKDIR /app
+
+COPY --from=builder /app/target/financial-0.0.1-SNAPSHOT.jar app.jar
+
+EXPOSE 8081
+
+ENTRYPOINT ["java", "-jar", "app.jar"]
