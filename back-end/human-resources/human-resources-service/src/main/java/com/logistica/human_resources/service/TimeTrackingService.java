@@ -1,20 +1,21 @@
 // TimeTrackingService.java
-package com.logistics.HumanResources.service;
+package com.logistica.human_resources.service;
 
-import com.logistics.HumanResources.dto.TimeEntryDTO;
-import com.logistics.HumanResources.exception.BusinessException;
-import com.logistics.HumanResources.exception.ResourceNotFoundException;
-import com.logistics.HumanResources.model.Employee;
-import com.logistics.HumanResources.model.TimeEntry;
-import com.logistics.HumanResources.repository.EmployeeRepository;
-import com.logistics.HumanResources.repository.TimeEntryRepository;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.logistica.human_resources.dto.TimeEntryDTO;
+import com.logistica.human_resources.exception.BusinessException;
+import com.logistica.human_resources.exception.ResourceNotFoundException;
+import com.logistica.human_resources.model.Employee;
+import com.logistica.human_resources.model.TimeEntry;
+import com.logistica.human_resources.repository.EmployeeRepository;
+import com.logistica.human_resources.repository.TimeEntryRepository;
+
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;

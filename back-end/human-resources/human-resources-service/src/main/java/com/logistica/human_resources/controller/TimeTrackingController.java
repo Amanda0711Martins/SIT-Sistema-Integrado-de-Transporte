@@ -1,10 +1,7 @@
 // TimeTrackingController.java
-package com.logistics.HumanResources.controller;
+package com.logistica.human_resources.controller;
 
-import com.logistics.HumanResources.dto.TimeEntryDTO;
-import com.logistics.HumanResources.service.TimeTrackingService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -13,8 +10,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
+import com.logistica.human_resources.dto.TimeEntryDTO;
+import com.logistica.human_resources.service.TimeTrackingService;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -22,35 +23,30 @@ import java.util.List;
 @RequestMapping("/api/v1/time-tracking")
 @RequiredArgsConstructor
 @Slf4j
-@Tag(name = "Time Tracking", description = "APIs for managing employee time entries")
 @Validated
 public class TimeTrackingController {
 
     private final TimeTrackingService timeTrackingService;
 
     @GetMapping
-    @Operation(summary = "Get all time entries")
     public ResponseEntity<List<TimeEntryDTO>> getAllTimeEntries() {
         log.info("REST request to get all time entries");
         return ResponseEntity.ok(timeTrackingService.getAllTimeEntries());
     }
 
     @GetMapping("/{id}")
-    @Operation(summary = "Get time entry by ID")
     public ResponseEntity<TimeEntryDTO> getTimeEntry(@PathVariable Long id) {
         log.info("REST request to get time entry with id: {}", id);
         return ResponseEntity.ok(timeTrackingService.getTimeEntryById(id));
     }
 
     @GetMapping("/employee/{employeeId}")
-    @Operation(summary = "Get time entries by employee ID")
     public ResponseEntity<List<TimeEntryDTO>> getTimeEntriesByEmployeeId(@PathVariable Long employeeId) {
         log.info("REST request to get time entries for employee id: {}", employeeId);
         return ResponseEntity.ok(timeTrackingService.getTimeEntriesByEmployeeId(employeeId));
     }
 
     @GetMapping("/range")
-    @Operation(summary = "Get time entries by date range")
     public ResponseEntity<List<TimeEntryDTO>> getTimeEntriesByDateRange(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime start,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime end) {
@@ -59,7 +55,6 @@ public class TimeTrackingController {
     }
 
     @PostMapping("/entry")
-    @Operation(summary = "Record a new time entry")
     public ResponseEntity<TimeEntryDTO> recordEntry(
             @Valid @RequestBody TimeEntryDTO timeEntryDTO,
             HttpServletRequest request) {
@@ -74,7 +69,6 @@ public class TimeTrackingController {
     }
 
     @PutMapping("/{id}/exit")
-    @Operation(summary = "Record exit time for a time entry")
     public ResponseEntity<TimeEntryDTO> recordExit(
             @PathVariable Long id,
             @RequestParam(required = false) String notes,
@@ -90,7 +84,6 @@ public class TimeTrackingController {
     }
 
     @PutMapping("/{id}")
-    @Operation(summary = "Update a time entry")
     public ResponseEntity<TimeEntryDTO> updateTimeEntry(
             @PathVariable Long id,
             @Valid @RequestBody TimeEntryDTO timeEntryDTO) {
@@ -101,7 +94,6 @@ public class TimeTrackingController {
     }
 
     @DeleteMapping("/{id}")
-    @Operation(summary = "Delete a time entry")
     public ResponseEntity<Void> deleteTimeEntry(@PathVariable Long id) {
         log.info("REST request to delete time entry with id: {}", id);
         timeTrackingService.deleteTimeEntry(id);

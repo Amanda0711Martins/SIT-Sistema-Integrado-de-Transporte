@@ -1,9 +1,10 @@
 // EmployeeRepository.java
-package com.logistics.HumanResources.repository;
+package com.logistica.human_resources.repository;
 
-import com.logistics.HumanResources.model.Employee;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+
+import com.logistica.human_resources.model.Employee;
 
 import java.util.List;
 import java.util.Optional;

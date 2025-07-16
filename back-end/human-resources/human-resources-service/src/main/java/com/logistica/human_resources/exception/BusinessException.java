@@ -1,5 +1,5 @@
 // BusinessException.java
-package com.logistics.HumanResources.exception;
+package com.logistica.human_resources.exception;
 
 public class BusinessException extends RuntimeException {
     public BusinessException(String message) {

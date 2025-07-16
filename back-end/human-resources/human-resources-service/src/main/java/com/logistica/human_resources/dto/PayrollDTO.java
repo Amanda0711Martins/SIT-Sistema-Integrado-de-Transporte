@@ -1,16 +1,18 @@
 // PayrollDTO.java
-package com.logistics.HumanResources.dto;
+package com.logistica.human_resources.dto;
 
 import lombok.Data;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
-import com.logistics.HumanResources.model.Payroll.PayrollStatus;
 
-import javax.validation.constraints.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.YearMonth;
+
+import com.logistica.human_resources.model.Payroll.PayrollStatus;
+
+import jakarta.validation.constraints.NotNull;
 
 @Data
 @Builder

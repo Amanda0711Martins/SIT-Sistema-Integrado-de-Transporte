@@ -1,5 +1,5 @@
 // ResourceNotFoundException.java
-package com.logistics.HumanResources.exception;
+package com.logistica.human_resources.exception;
 
 public class ResourceNotFoundException extends RuntimeException {
     public ResourceNotFoundException(String message) {

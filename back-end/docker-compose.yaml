@@ -37,7 +37,7 @@ services:
       - EUREKA_PORT=8761
       - DB_HOST=postgres
       - DB_PORT=5432
-      - DB_NAME=customer_db
+      - DB_NAME=sitcustomers
       - DB_USERNAME=postgres
       - DB_PASSWORD=postgres
     networks:

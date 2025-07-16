@@ -1,14 +1,16 @@
 // TimeEntryDTO.java
-package com.logistics.HumanResources.dto;
+package com.logistica.human_resources.dto;
 
 import lombok.Data;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
-import com.logistics.HumanResources.model.TimeEntry.EntryType;
 
-import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+
+import com.logistica.human_resources.model.TimeEntry.EntryType;
+
+import jakarta.validation.constraints.NotNull;
 
 @Data
 @Builder

@@ -1,20 +1,21 @@
 // TimeTrackingServiceTest.java
-package com.logistics.HumanResources.service;
+package com.logistica.human_resources.service;
 
-import com.logistics.HumanResources.dto.TimeEntryDTO;
-import com.logistics.HumanResources.exception.BusinessException;
-import com.logistics.HumanResources.exception.ResourceNotFoundException;
-import com.logistics.HumanResources.model.Employee;
-import com.logistics.HumanResources.model.TimeEntry;
-import com.logistics.HumanResources.model.TimeEntry.EntryType;
-import com.logistics.HumanResources.repository.EmployeeRepository;
-import com.logistics.HumanResources.repository.TimeEntryRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import com.logistica.human_resources.dto.TimeEntryDTO;
+import com.logistica.human_resources.exception.BusinessException;
+import com.logistica.human_resources.exception.ResourceNotFoundException;
+import com.logistica.human_resources.model.Employee;
+import com.logistica.human_resources.model.TimeEntry;
+import com.logistica.human_resources.model.TimeEntry.EntryType;
+import com.logistica.human_resources.repository.EmployeeRepository;
+import com.logistica.human_resources.repository.TimeEntryRepository;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

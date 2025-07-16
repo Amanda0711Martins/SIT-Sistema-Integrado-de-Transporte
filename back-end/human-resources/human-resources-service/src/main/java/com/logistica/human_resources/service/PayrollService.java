@@ -1,18 +1,20 @@
 // PayrollService.java
-package com.logistics.HumanResources.service;
+package com.logistica.human_resources.service;
 
-import com.logistics.HumanResources.dto.PayrollDTO;
-import com.logistics.HumanResources.exception.BusinessException;
-import com.logistics.HumanResources.exception.ResourceNotFoundException;
-import com.logistics.HumanResources.model.Employee;
-import com.logistics.HumanResources.model.Payroll;
-import com.logistics.HumanResources.model.Payroll.PayrollStatus;
-import com.logistics.HumanResources.repository.EmployeeRepository;
-import com.logistics.HumanResources.repository.PayrollRepository;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.logistica.human_resources.dto.PayrollDTO;
+import com.logistica.human_resources.exception.BusinessException;
+import com.logistica.human_resources.exception.ResourceNotFoundException;
+import com.logistica.human_resources.model.Employee;
+import com.logistica.human_resources.model.Payroll;
+import com.logistica.human_resources.model.Payroll.PayrollStatus;
+import com.logistica.human_resources.repository.EmployeeRepository;
+import com.logistica.human_resources.repository.PayrollRepository;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;

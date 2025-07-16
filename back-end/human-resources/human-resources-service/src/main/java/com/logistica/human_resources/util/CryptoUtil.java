@@ -1,5 +1,5 @@
 // CryptoUtil.java
-package com.logistics.HumanResources.util;
+package com.logistica.human_resources.util;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
