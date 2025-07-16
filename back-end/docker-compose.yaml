@@ -83,7 +83,7 @@ services:
       - sit-network
 
 
-  humran-resources-service:
+  human-resources-service:
     build:
       context: ./human-resources/human-resources-service
     container_name: human-resources
