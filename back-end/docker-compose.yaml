@@ -1,5 +1,5 @@
 services:
-  discovery:
+  eureka:
     build:
       context: ./eureka
     container_name: eureka
@@ -28,12 +28,12 @@ services:
       context: ./customer/customer-service
     container_name: customer
     depends_on:
-      - discovery
       - postgres
+      - eureka
     ports:
       - "8081:8081"
     environment:
-      - EUREKA_HOST=discovery
+      - EUREKA_HOST=eureka
       - EUREKA_PORT=8761
       - DB_HOST=postgres
       - DB_PORT=5432
@@ -47,12 +47,12 @@ services:
       context: ./financial/financial-service
     container_name: financial
     depends_on:
-      - discovery
       - postgres
+      - eureka
     ports:
       - "8082:8082"
     environment:
-      - EUREKA_HOST=discovery
+      - EUREKA_HOST=eureka
       - EUREKA_PORT=8761
       - DB_HOST=postgres
       - DB_PORT=5432
@@ -67,12 +67,12 @@ services:
       context: ./users
     container_name: users
     depends_on:
-      - discovery
       - postgres
+      - eureka
     ports:
       - "8080:8080"
     environment:
-      - EUREKA_HOST=discovery
+      - EUREKA_HOST=eureka
       - EUREKA_PORT=8761
       - DB_HOST=postgres
       - DB_PORT=5432
@@ -82,6 +82,24 @@ services:
     networks:
       - sit-network
 
+
+  humran-resources-service:
+    build:
+      context: ./human-resources/human-resources-service
+    container_name: human-resources
+    depends_on:
+      - postgres
+      - eureka
+    ports:
+      - "8083:8083"
+    environment:
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=sithumanresources
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=postgres
+    networks:
+      - sit-network
 networks:
   sit-network:
     driver: bridge
