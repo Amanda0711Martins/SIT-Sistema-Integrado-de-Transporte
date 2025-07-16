@@ -1,18 +1,13 @@
-package com.logistics.operational.controller;
+package com.logistica.operational.controller;
 
-import com.logistics.operational.dto.VehicleRequest;
-import com.logistics.operational.dto.VehicleResponse;
-import com.logistics.operational.service.VehicleService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/vehicles")
@@ -20,7 +15,7 @@ import javax.validation.Valid;
 @Slf4j
 public class VehicleController {
 
-    private final VehicleService vehicleService;
+    private final vehicleService vehicleService;
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN') or hasRole('FLEET_MANAGER')")
