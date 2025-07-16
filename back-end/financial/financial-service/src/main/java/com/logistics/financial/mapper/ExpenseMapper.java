@@ -3,7 +3,6 @@ package com.logistics.financial.mapper;
 import com.logistics.financial.dto.ExpenseDTO;
 import com.logistics.financial.model.Expense;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 
 import java.util.List;
 

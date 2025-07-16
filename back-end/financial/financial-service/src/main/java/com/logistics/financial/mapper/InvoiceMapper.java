@@ -9,7 +9,6 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface InvoiceMapper {
-    @Mapping(target = "clientName", ignore = true)
     InvoiceDTO toDto(Invoice invoice);
     List<InvoiceDTO> toDtoList(List<Invoice> invoices);
     Invoice toEntity(InvoiceDTO invoiceDTO);

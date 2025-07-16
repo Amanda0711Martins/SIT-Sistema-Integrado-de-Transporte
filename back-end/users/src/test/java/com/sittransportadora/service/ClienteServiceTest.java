@@ -1,7 +1,8 @@
 package com.sittransportadora.service;
 
 import com.sittransportadora.model.User;
-import com.sittransportadora.repository.ClienteRepository;
+import com.sittransportadora.repository.UserRepository;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -9,46 +10,45 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDateTime;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class ClienteServiceTest {
+class UserServiceTest {
 
     @Mock
-    private ClienteRepository clienteRepository;
+    private UserRepository userRepository;
 
     @InjectMocks
-    private ClienteService clienteService;
+    private UserService userService;
 
-    private Cliente cliente;
+    private User user;
 
     @BeforeEach
     void setup() {
-        cliente = new Cliente();
-        cliente.setUuid(UUID.randomUUID());
-        cliente.setName("João Teste");
+        user = new User();
+        user.setUuid(UUID.randomUUID());
+        user.setName("João Teste");
     }
 
     @Test
-    void testSaveCliente() {
-        when(clienteRepository.save(any(Cliente.class))).thenAnswer(i -> i.getArgument(0));
+    void testSaveUser() {
+        when(userRepository.save(any(User.class))).thenAnswer(i -> i.getArgument(0));
 
-        Cliente saved = clienteService.saveCliente(cliente);
+        User saved = userService.saveUser(user);
 
         assertNotNull(saved.getCreateDate());
-        verify(clienteRepository).save(cliente);
+        verify(userRepository).save(user);
     }
 
     @Test
     void testFindAll() {
-        List<Cliente> lista = Arrays.asList(cliente);
-        when(clienteRepository.findAll()).thenReturn(lista);
+        List<User> lista = Arrays.asList(user);
+        when(userRepository.findAll()).thenReturn(lista);
 
-        List<Cliente> result = clienteService.findAll();
+        List<User> result = userService.findAll();
 
         assertEquals(1, result.size());
         assertEquals("João Teste", result.get(0).getName());
@@ -56,35 +56,35 @@ class ClienteServiceTest {
 
     @Test
     void testFindByIdFound() {
-        UUID id = cliente.getUuid();
-        when(clienteRepository.findById(id)).thenReturn(Optional.of(cliente));
+        UUID id = user.getUuid();
+        when(userRepository.findById(id)).thenReturn(Optional.of(user));
 
-        Optional<Cliente> result = clienteService.findById(id);
+        Optional<User> result = userService.findById(id);
 
         assertTrue(result.isPresent());
         assertEquals("João Teste", result.get().getName());
     }
 
     @Test
-    void testUpdateCliente() {
-        UUID id = cliente.getUuid();
-        when(clienteRepository.findById(id)).thenReturn(Optional.of(cliente));
-        when(clienteRepository.save(cliente)).thenReturn(cliente);
+    void testUpdateUser() {
+        UUID id = user.getUuid();
+        when(userRepository.findById(id)).thenReturn(Optional.of(user));
+        when(userRepository.save(user)).thenReturn(user);
 
-        Cliente updated = clienteService.updateCliente(id, cliente);
+        User updated = userService.updateUser(id, user);
 
-        verify(clienteRepository).save(cliente);
+        verify(userRepository).save(user);
         assertEquals("João Teste", updated.getName());
     }
 
     @Test
-    void testDeleteCliente() {
-        UUID id = cliente.getUuid();
-        when(clienteRepository.findById(id)).thenReturn(Optional.of(cliente));
+    void testDeleteUser() {
+        UUID id = user.getUuid();
+        when(userRepository.findById(id)).thenReturn(Optional.of(user));
 
-        clienteService.deleteCliente(id);
+        userService.deleteUser(id);
 
-        verify(clienteRepository).delete(cliente);
+        verify(userRepository).delete(user);
     }
 }        
 

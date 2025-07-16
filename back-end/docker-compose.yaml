@@ -12,15 +12,16 @@ services:
     image: postgres:16
     container_name: postgres
     environment:
-      POSTGRES_DB: customer_db
+      POSTGRES_DB: sit
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     ports:
-      - "5433:5433"
+      - "5432:5432"
     networks:
       - sit-network
     volumes:
       - pg_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
 
   customer-service:
     build:
@@ -37,6 +38,45 @@ services:
       - DB_HOST=postgres
       - DB_PORT=5432
       - DB_NAME=customer_db
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=postgres
+    networks:
+      - sit-network
+  financial-service:
+    build:
+      context: ./financial/financial-service
+    container_name: financial
+    depends_on:
+      - discovery
+      - postgres
+    ports:
+      - "8082:8082"
+    environment:
+      - EUREKA_HOST=discovery
+      - EUREKA_PORT=8761
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=sitfinancial
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=postgres
+    networks:
+      - sit-network
+      
+  user-service:
+    build:
+      context: ./users
+    container_name: users
+    depends_on:
+      - discovery
+      - postgres
+    ports:
+      - "8080:8080"
+    environment:
+      - EUREKA_HOST=discovery
+      - EUREKA_PORT=8761
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=situsers
       - DB_USERNAME=postgres
       - DB_PASSWORD=postgres
     networks:

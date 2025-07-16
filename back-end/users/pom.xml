@@ -10,10 +10,10 @@
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.logistica</groupId>
-	<artifactId>customer</artifactId>
+	<artifactId>user-service</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>customer</name>
-	<description>User management microservice with JPA</description>
+	<name>user-service</name>
+	<description>User management microservice</description>
 	<url />
 	<licenses>
 		<license />

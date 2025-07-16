@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+import com.logistics.financial.model.Expense.ExpenseType;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -15,7 +16,6 @@ import jakarta.validation.constraints.Positive;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-
 public class ExpenseDTO {
     private Long id;
 

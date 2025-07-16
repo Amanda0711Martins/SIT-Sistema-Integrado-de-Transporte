@@ -2,6 +2,8 @@ package com.logistics.financial.controller;
 
 import com.logistics.financial.dto.InvoiceDTO;
 import com.logistics.financial.service.InvoiceService;
+
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -11,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.Validation.Valid;
 import java.time.LocalDateTime;
 import java.util.List;
 
