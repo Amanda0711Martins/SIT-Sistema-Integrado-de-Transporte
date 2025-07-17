@@ -10,7 +10,7 @@ RUN ./mvnw dependency:go-offline
 
 COPY src ./src
 
-RUN ./mvnw package -DskipTests
+RUN ./mvnw clean package -DskipTests
 
 
 # --- Estágio 2: Imagem Final ---

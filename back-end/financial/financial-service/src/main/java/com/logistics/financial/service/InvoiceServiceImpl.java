@@ -1,6 +1,6 @@
 package com.logistics.financial.service;
 
-import com.logistics.financial.client.ClientServiceClient;
+import com.logistics.financial.client.CustomerServiceClient;
 import com.logistics.financial.dto.ClientDTO;
 import com.logistics.financial.dto.InvoiceDTO;
 import com.logistics.financial.exception.BusinessException;
@@ -26,7 +26,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 
     private final InvoiceRepository invoiceRepository;
     private final InvoiceMapper invoiceMapper;
-    private final ClientServiceClient clientServiceClient;
+    private final CustomerServiceClient clientServiceClient;
 
     @Override
     @Transactional

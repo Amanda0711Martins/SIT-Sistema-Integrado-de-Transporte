@@ -1,6 +1,6 @@
 package com.logistics.financial.service;
 
-import com.logistics.financial.client.ClientServiceClient;
+import com.logistics.financial.client.CustomerServiceClient;
 import com.logistics.financial.dto.BillingDTO;
 import com.logistics.financial.dto.ClientDTO;
 import com.logistics.financial.exception.BusinessException;
@@ -26,7 +26,7 @@ public class BillingServiceImpl implements BillingService {
 
     private final BillingRepository billingRepository;
     private final BillingMapper billingMapper;
-    private final ClientServiceClient clientServiceClient;
+    private final CustomerServiceClient clientServiceClient;
 
     @Override
     @Transactional

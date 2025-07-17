@@ -31,6 +31,7 @@
 		<java.version>17</java.version>
 		<spring-cloud.version>2024.0.0</spring-cloud.version>
 		<org.mapstruct.version>1.5.5.Final</org.mapstruct.version>
+		<lombok.version>1.18.30</lombok.version>
 	</properties>
 	<dependencyManagement>
 		<dependencies>
