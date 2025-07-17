@@ -59,7 +59,6 @@ services:
       - DB_NAME=sitfinancial
       - DB_USERNAME=postgres
       - DB_PASSWORD=postgres
-      - HR_ENCRYPTION_KEY=my-super-secret-and-long-encryption-key-12345
     networks:
       - sit-network
       
@@ -99,6 +98,7 @@ services:
       - DB_NAME=sithumanresources
       - DB_USERNAME=postgres
       - DB_PASSWORD=postgres
+      - HR_ENCRYPTION_KEY=my-super-secret-and-long-encryption-key-12345
     networks:
       - sit-network
 networks:
