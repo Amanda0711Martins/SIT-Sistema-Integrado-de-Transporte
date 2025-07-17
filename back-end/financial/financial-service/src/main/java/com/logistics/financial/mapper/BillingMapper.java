@@ -5,8 +5,10 @@ import com.logistics.financial.model.Billing;
 
 import java.util.List;
 
+import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
+@Mapper(componentModel = "spring")
 public interface BillingMapper {
     @Mapping(target = "clientName", ignore = true)
     BillingDTO toDto(Billing billing);

@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/billings")
+@RequestMapping("/api/v1/billings")
 @RequiredArgsConstructor
 @Validated
 public class BillingController {
