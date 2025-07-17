@@ -13,13 +13,12 @@ jwt:
             jmjhnBvseNqywxOLN7K5OzRluz3zOE3UKQqCdR4H84JYCT86H0eYxW6V5F1yKykS
             vwIDAQAB
             -----END PUBLIC KEY-----
-
+hr:
+  encryption:
+    key: ${HR_ENCRYPTION_KEY}
 spring:
   application:
     name: human-resources-service
-  profiles:
-    active:
-    - dev
   datasource:
     url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:sithumanresources}
     username: ${DB_USERNAME:postgres}
