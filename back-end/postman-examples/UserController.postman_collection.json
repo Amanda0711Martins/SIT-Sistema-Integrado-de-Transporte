@@ -1,0 +1,53 @@
+{
+  "info": {
+    "name": "UserController",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Obter usuário por ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/admin/{{id}}",
+          "host": ["{{base_url}}"],
+          "path": ["api", "admin", "{{id}}"]
+        }
+      }
+    },
+    {
+      "name": "Obter todos os usuários",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/admin/users",
+          "host": ["{{base_url}}"],
+          "path": ["api", "admin", "users"]
+        }
+      }
+    },
+    {
+      "name": "Atualizar usuário",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Novo Nome\",\n  \"email\": \"novoemail@exemplo.com\",\n  \"phone\": \"31999999999\",\n  \"address\": \"Novo endereço\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/admin/{{id}}",
+          "host": ["{{base_url}}"],
+          "path": ["api", "admin", "{{id}}"]
+        }
+      }
+    }
+  ]
+}

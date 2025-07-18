@@ -46,9 +46,9 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth ->
                         auth.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/auth/**").permitAll() // Apenas POST para login
-                        .requestMatchers("/api/admin/**").hasAuthority("SCOPE_ROLE_ADMIN")
-                        .requestMatchers("/api/users/**").hasAnyAuthority("SCOPE_ROLE_USER", "SCOPE_ROLE_ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/v1/auth/**").permitAll() // Apenas POST para login
+                        .requestMatchers("/api/v1/admin/**").hasAuthority("SCOPE_ROLE_ADMIN")
+                        .requestMatchers("/api/v1/users/**").hasAnyAuthority("SCOPE_ROLE_USER", "SCOPE_ROLE_ADMIN")
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
@@ -65,17 +65,12 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        // A origem do seu frontend
         configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173"));
-        // Métodos permitidos
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        // Cabeçalhos permitidos
         configuration.setAllowedHeaders(Arrays.asList("*"));
-        // Essencial para o seu fluxo de autenticação por cookies
         configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        // Aplica esta configuração para todas as rotas
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }

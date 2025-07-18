@@ -1,0 +1,103 @@
+{
+  "info": {
+    "name": "EmployeeController",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Get All Employees",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{base_url}}/api/v1/employees?page=0&size=10",
+          "host": ["{{base_url}}"],
+          "path": ["api", "v1", "employees"],
+          "query": [
+            { "key": "page", "value": "0" },
+            { "key": "size", "value": "10" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Get Active Employees",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{base_url}}/api/v1/employees/active",
+          "host": ["{{base_url}}"],
+          "path": ["api", "v1", "employees", "active"]
+        }
+      }
+    },
+    {
+      "name": "Get Employee by ID",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{base_url}}/api/v1/employees/1",
+          "host": ["{{base_url}}"],
+          "path": ["api", "v1", "employees", "1"]
+        }
+      }
+    },
+    {
+      "name": "Get Employees by Department",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{base_url}}/api/v1/employees/department/Financeiro",
+          "host": ["{{base_url}}"],
+          "path": ["api", "v1", "employees", "department", "Financeiro"]
+        }
+      }
+    },
+    {
+      "name": "Create Employee",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"João da Silva\",\n  \"email\": \"joao.silva@example.com\",\n  \"active\": true,\n  \"department\": \"Financeiro\",\n  \"position\": \"Analista\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/v1/employees",
+          "host": ["{{base_url}}"],
+          "path": ["api", "v1", "employees"]
+        }
+      }
+    },
+    {
+      "name": "Update Employee",
+      "request": {
+        "method": "PUT",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"João da Silva\",\n  \"email\": \"joao.novo@example.com\",\n  \"active\": true,\n  \"department\": \"RH\",\n  \"position\": \"Coordenador\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/v1/employees/1",
+          "host": ["{{base_url}}"],
+          "path": ["api", "v1", "employees", "1"]
+        }
+      }
+    },
+    {
+      "name": "Delete Employee",
+      "request": {
+        "method": "DELETE",
+        "url": {
+          "raw": "{{base_url}}/api/v1/employees/1",
+          "host": ["{{base_url}}"],
+          "path": ["api", "v1", "employees", "1"]
+        }
+      }
+    }
+  ]
+}

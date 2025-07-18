@@ -35,8 +35,8 @@ public class CustomerController {
         return ResponseEntity.ok(customer);
     }
 
-    @GetMapping("/cnpj/{cnpj}")
-    public ResponseEntity<CustomerDTO> getCustomerByCnpj(@PathVariable String cnpj) {
+    @GetMapping("/cnpj")
+    public ResponseEntity<CustomerDTO> getCustomerByCnpj(@RequestParam String cnpj) {
         log.info("REST request to get customer by CNPJ: {}", cnpj);
         CustomerDTO customer = customerService.getCustomerByCnpj(cnpj);
         return ResponseEntity.ok(customer);
