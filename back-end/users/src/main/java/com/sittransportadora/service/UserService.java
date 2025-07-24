@@ -47,6 +47,7 @@ public class UserService {
         return user;
     }
 
+    @Transactional
     public User updateUser(UUID id, User userAtualizado) {
         return userRepository.findById(id)
                 .map(existingUser -> {
@@ -58,6 +59,7 @@ public class UserService {
                 .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado"));
     }
 
+    @Transactional
     public void deleteUser(UUID id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado"));
