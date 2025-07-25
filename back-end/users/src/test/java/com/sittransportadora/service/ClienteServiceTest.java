@@ -10,8 +10,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -36,22 +34,23 @@ class UserServiceTest {
         user = new User();
         user.setUuid(UUID.randomUUID());
         user.setName("João Teste");
+        user.setEmail("joao@gmail.com");
         user.setPassword("SenhaForte123");
     }
 
     @Test
     void testSaveUser() {
-        //Arrange - Preparar a simulação
+        // Arrange - Preparar a simulação
         String rawPasswrod = user.getPassword();
         String encodedPassword = "encrypted_password";
 
         when(userRepository.save(any(User.class))).thenAnswer(i -> i.getArgument(0));
         when(passwordEncoder.encode(rawPasswrod)).thenReturn(encodedPassword);
 
-        //Act - Ação
+        // Act - Ação
         User savedUser = userService.saveUser(user);
 
-        //Assert - Verificar
+        // Assert - Verificar
         assertNotNull(savedUser.getCreateDate());
         assertEquals(encodedPassword, savedUser.getPassword());
         assertNotEquals(encodedPassword, savedUser.getPassword());
@@ -64,14 +63,14 @@ class UserServiceTest {
 
     @Test
     void testFindAll() {
-        //Arrange - Preparar
+        // Arrange - Preparar
         List<User> userList = Collections.singletonList(user);
         when(userRepository.findAll()).thenReturn(userList);
 
-        // Act - Ação 
+        // Act - Ação
         List<User> result = userService.findAll();
 
-        //Assert - Verifica
+        // Assert - Verifica
         assertEquals(1, result.size());
         assertEquals("João Teste", result.get(0).getName());
         verify(userRepository).findAll();
@@ -79,7 +78,7 @@ class UserServiceTest {
 
     @Test
     void testFindByIdFound() {
-        //Arrange - Preparar
+        // Arrange - Preparar
         UUID id = user.getUuid();
         when(userRepository.findById(id)).thenReturn(Optional.of(user));
 
@@ -91,20 +90,47 @@ class UserServiceTest {
     }
 
     @Test
-    void testUpdateUser() {
-        UUID id = user.getUuid();
-        User updateUser = new User();
-        updateUser.setAddress("");
+    void testFindByEmail() {
+        String userEmail = user.getEmail();
 
+        when(userRepository.findByEmail(userEmail)).thenReturn(Optional.of(user));
+
+        Optional<User> result = userService.findByEmail(userEmail);
+
+        assertTrue(result.isPresent());
+        assertEquals(userEmail, result.get().getEmail());
+        verify(userRepository).findByEmail(userEmail);
+    }
+
+    @Test
+    void testUpdateUser() {
+        // Arrange: Preparamos os dados
+        UUID id = user.getUuid();
+
+        User updatedInfo = new User();
+        updatedInfo.setName("João Atualizado");
+        updatedInfo.setEmail("novo@email.com");
+        updatedInfo.setPassword("NovaSenha456");
+
+        String encodedNewPassword = "nova_senha_encriptada";
 
         when(userRepository.findById(id)).thenReturn(Optional.of(user));
-        when(userRepository.save(user)).thenReturn(user);
+        when(passwordEncoder.encode(updatedInfo.getPassword())).thenReturn(encodedNewPassword);
 
-        User updated = userService.updateUser(id, user);
+        when(userRepository.save(any(User.class))).thenReturn(user);
 
+        // Act: Executamos o método que queremos testar
+        User result = userService.updateUser(id, updatedInfo);
+
+        // Assert: Verificamos se o resultado está correto
+        assertEquals("João Atualizado", result.getName());
+        assertEquals("novo@email.com", result.getEmail());
+        assertEquals(encodedNewPassword, result.getPassword()); 
+        assertNotNull(result.getAlterDate()); 
+        // Verificamos se os mocks foram chamados como esperado
+        verify(userRepository).findById(id);
         verify(userRepository).save(user);
-        assertEquals("João Teste", updated.getName());
-
+        verify(passwordEncoder).encode(updatedInfo.getPassword());
     }
 
     @Test
@@ -116,5 +142,4 @@ class UserServiceTest {
 
         verify(userRepository).delete(user);
     }
-}        
-
+}
