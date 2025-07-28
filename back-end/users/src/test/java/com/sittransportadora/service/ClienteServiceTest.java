@@ -2,6 +2,8 @@ package com.sittransportadora.service;
 
 import com.sittransportadora.model.Role;
 import com.sittransportadora.repository.RoleRepository;
+import com.sittransportadora.repository.UserRepository;
+import com.sittransportadora.model.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -10,7 +12,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import java.util.*;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -21,10 +22,21 @@ class RoleServiceTest {
     @Mock
     private RoleRepository roleRepository;
 
+    @Mock
+    private UserRepository userRepository;
+
+    @Mock 
+    BCryptPasswordEncoder passwordEncoder;
+
     @InjectMocks
     private RoleService roleService;
 
+    @InjectMocks
+    private UserService userService;
+
     private Role role;
+
+    private User user;
 
     @BeforeEach
     void setup() {

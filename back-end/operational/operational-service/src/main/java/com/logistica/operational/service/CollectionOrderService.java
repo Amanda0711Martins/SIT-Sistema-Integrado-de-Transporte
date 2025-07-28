@@ -1,17 +1,15 @@
-package com.logistica.operational.service;
+import java.time.LocalDateTime;
+import java.util.UUID;
+
+import org.springframework.stereotype.Service;
 
 import com.logistica.operational.client.CustomerServiceClient;
 import com.logistica.operational.dto.CollectionOrderRequestDTO;
 import com.logistica.operational.dto.CollectionOrderResponseDTO;
-import com.logistica.operational.mapper.*;
 import com.logistica.operational.dto.CustomerDTO;
 import com.logistica.operational.models.CollectionOrder;
+import com.logistica.operational.mapper.*;
 import com.logistica.operational.repository.CollectionOrderRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Service
 public class CollectionOrderService {
