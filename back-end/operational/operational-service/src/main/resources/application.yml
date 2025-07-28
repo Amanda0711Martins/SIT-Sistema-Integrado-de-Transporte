@@ -1,57 +1,40 @@
 server:
-  port: 8082
-  servlet:
-    context-path: /api/operational
+  port: 8084 # Porta para o serviço operacional
 
 spring:
   application:
     name: operational-service
+
+  # Configuração do Banco de Dados
   datasource:
-    url: ${DB_URL:jdbc:postgresql://localhost:5432/operational_db}
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:sitoperational}
     username: ${DB_USERNAME:postgres}
     password: ${DB_PASSWORD:postgres}
     driver-class-name: org.postgresql.Driver
+
+  # Configuração do JPA/Hibernate
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: update # Cria/Atualiza o schema do banco de dados ao iniciar
+    show-sql: true
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
-    show-sql: true
-  kafka:
-    bootstrap-servers: ${KAFKA_SERVERS:localhost:9092}
-    consumer:
-      group-id: operational-group
-      auto-offset-reset: earliest
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
-    producer:
-      key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+        dialect: org.hibernate.dialect.PostgreSQLDialect
 
+# Configuração do Eureka Client
 eureka:
   client:
     service-url:
-      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
+      # Aponta para o nome do serviço do Eureka no Docker Compose
+      defaultZone: http://${EUREKA_HOST:eureka}:${EUREKA_PORT:8761}/eureka/
   instance:
     prefer-ip-address: true
 
-client:
-  service:
-    url: ${CLIENT_SERVICE_URL:http://client-service/api/clients}
-
-management:
-  endpoints:
-    web:
-      exposure:
-        include: health,info,prometheus
-  metrics:
-    export:
-      prometheus:
-        enabled: true
-
+# Configuração de Logging
 logging:
   level:
-    com.logistics.operational: INFO
-    org.springframework: WARN
+    com.logistica.operational: INFO
+    org.springframework.web: INFO
+    org.hibernate.SQL: DEBUG
+

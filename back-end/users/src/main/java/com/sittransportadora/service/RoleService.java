@@ -2,40 +2,38 @@ package com.sittransportadora.service;
 
 import com.sittransportadora.model.Role;
 import com.sittransportadora.repository.RoleRepository;
-
-import jakarta.transaction.Transactional;
-
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class RoleService {
 
-    @Autowired
-    private RoleRepository roleRepository;
+    private final RoleRepository roleRepository;
 
-    @Transactional
-    public Role save(Role role) {
+    public Role saveRole(Role role) {
+        if (roleRepository.findByName(role.getName()).isPresent()) {
+            throw new IllegalArgumentException("Role with name " + role.getName() + " already exists.");
+        }
         return roleRepository.save(role);
     }
 
-    public List<Role> findAll() {
+    public List<Role> findAllRoles() {
         return roleRepository.findAll();
     }
 
-    public Optional<Role> findById(Long id) {
-        return roleRepository.findById(id) ;
-    }
-
-   public Role findByName(String name) {
-        return roleRepository.findByName(name)
-                .orElseThrow(() -> new RuntimeException("ERRO: A Role '" + name + "' não foi encontrada no banco de dados."));
+    public Optional<Role> findRoleByName(String name) {
+        return roleRepository.findByName(name);
     }
 
     public void deleteRole(Long id) {
-        roleRepository.findById(id).ifPresent(roleRepository::delete);
+        if (!roleRepository.existsById(id)) {
+            throw new IllegalArgumentException("Role with id " + id + " not found.");
+        }
+        roleRepository.deleteById(id);
     }
+    
 }

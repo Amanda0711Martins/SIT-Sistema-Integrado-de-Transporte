@@ -1,120 +1,120 @@
 package com.sittransportadora.service;
 
-import com.sittransportadora.model.User;
-import com.sittransportadora.repository.UserRepository;
-
+import com.sittransportadora.model.Role;
+import com.sittransportadora.repository.RoleRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class UserServiceTest {
+class RoleServiceTest {
 
     @Mock
-    private BCryptPasswordEncoder passwordEncoder;
-
-    @Mock
-    private UserRepository userRepository;
+    private RoleRepository roleRepository;
 
     @InjectMocks
-    private UserService userService;
+    private RoleService roleService;
 
-    private User user;
+    private Role role;
 
     @BeforeEach
     void setup() {
-        user = new User();
-        user.setUuid(UUID.randomUUID());
-        user.setName("João Teste");
-        user.setPassword("SenhaForte123");
+        role = new Role();
+        role.setId(1L);
+        role.setName("ROLE_USER");
     }
 
     @Test
-    void testSaveUser() {
-        //Arrange - Preparar a simulação
-        String rawPasswrod = user.getPassword();
-        String encodedPassword = "encrypted_password";
+    void testSaveRole_Success() {
+        when(roleRepository.findByName("ROLE_USER")).thenReturn(Optional.empty());
+        when(roleRepository.save(any(Role.class))).thenReturn(role);
 
-        when(userRepository.save(any(User.class))).thenAnswer(i -> i.getArgument(0));
-        when(passwordEncoder.encode(rawPasswrod)).thenReturn(encodedPassword);
+        Role savedRole = roleService.saveRole(role);
 
-        //Act - Ação
-        User savedUser = userService.saveUser(user);
-
-        //Assert - Verificar
-        assertNotNull(savedUser.getCreateDate());
-        assertEquals(encodedPassword, savedUser.getPassword());
-        assertNotEquals(encodedPassword, savedUser.getPassword());
-        assertNotNull(savedUser.getRoles());
-        assertEquals(1, savedUser.getRoles().size());
-
-        verify(userRepository).save(user);
-        verify(passwordEncoder).encode(rawPasswrod);
+        assertNotNull(savedRole);
+        assertEquals("ROLE_USER", savedRole.getName());
+        verify(roleRepository).findByName("ROLE_USER");
+        verify(roleRepository).save(role);
     }
 
     @Test
-    void testFindAll() {
-        //Arrange - Preparar
-        List<User> userList = Collections.singletonList(user);
-        when(userRepository.findAll()).thenReturn(userList);
+    void testSaveRole_ThrowsException_WhenRoleExists() {
+        when(roleRepository.findByName("ROLE_USER")).thenReturn(Optional.of(role));
 
-        // Act - Ação 
-        List<User> result = userService.findAll();
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            roleService.saveRole(role);
+        });
 
-        //Assert - Verifica
+        assertEquals("Role with name ROLE_USER already exists.", exception.getMessage());
+        verify(roleRepository, never()).save(any(Role.class));
+    }
+
+    @Test
+    void testFindAllRoles() {
+        List<Role> roleList = Collections.singletonList(role);
+        when(roleRepository.findAll()).thenReturn(roleList);
+
+        List<Role> result = roleService.findAllRoles();
+
+        assertNotNull(result);
         assertEquals(1, result.size());
-        assertEquals("João Teste", result.get(0).getName());
-        verify(userRepository).findAll();
+        assertEquals("ROLE_USER", result.get(0).getName());
+        verify(roleRepository).findAll();
     }
 
     @Test
-    void testFindByIdFound() {
-        //Arrange - Preparar
-        UUID id = user.getUuid();
-        when(userRepository.findById(id)).thenReturn(Optional.of(user));
+    void testFindRoleByName_WhenRoleExists() {
+        when(roleRepository.findByName("ROLE_USER")).thenReturn(Optional.of(role));
 
-        Optional<User> result = userService.findById(id);
+        Optional<Role> result = roleService.findRoleByName("ROLE_USER");
 
         assertTrue(result.isPresent());
-        assertEquals("João Teste", result.get().getName());
-        verify(userRepository).findById(id);
+        assertEquals("ROLE_USER", result.get().getName());
+        verify(roleRepository).findByName("ROLE_USER");
     }
 
     @Test
-    void testUpdateUser() {
-        UUID id = user.getUuid();
-        User updateUser = new User();
-        updateUser.setAddress("");
+    void testFindRoleByName_WhenRoleNotFound() {
+        when(roleRepository.findByName("ROLE_NONEXISTENT")).thenReturn(Optional.empty());
 
+        Optional<Role> result = roleService.findRoleByName("ROLE_NONEXISTENT");
 
-        when(userRepository.findById(id)).thenReturn(Optional.of(user));
-        when(userRepository.save(user)).thenReturn(user);
+        assertFalse(result.isPresent());
+        verify(roleRepository).findByName("ROLE_NONEXISTENT");
+    }
+    
+    @Test
+    void testDeleteRole_Success() {
+        Long roleId = 1L;
+        when(roleRepository.existsById(roleId)).thenReturn(true);
+        doNothing().when(roleRepository).deleteById(roleId);
 
-        User updated = userService.updateUser(id, user);
+        roleService.deleteRole(roleId);
 
-        verify(userRepository).save(user);
-        assertEquals("João Teste", updated.getName());
-
+        verify(roleRepository).deleteById(roleId);
     }
 
     @Test
-    void testDeleteUser() {
-        UUID id = user.getUuid();
-        when(userRepository.findById(id)).thenReturn(Optional.of(user));
+    void testDeleteRole_ThrowsException_WhenRoleNotFound() {
+        Long roleId = 99L;
+        when(roleRepository.existsById(roleId)).thenReturn(false);
 
-        userService.deleteUser(id);
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            roleService.deleteRole(roleId);
+        });
 
-        verify(userRepository).delete(user);
+        assertEquals("Role with id 99 not found.", exception.getMessage());
+        verify(roleRepository, never()).deleteById(anyLong());
     }
-}        
-
+}
