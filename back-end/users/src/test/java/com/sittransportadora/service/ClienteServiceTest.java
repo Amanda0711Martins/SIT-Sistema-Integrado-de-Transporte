@@ -8,10 +8,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -30,79 +28,106 @@ class RoleServiceTest {
 
     @BeforeEach
     void setup() {
-        role = new Role();
-        role.setId(1L);
-        role.setName("ROLE_USER");
+        user = new User();
+        user.setUuid(UUID.randomUUID());
+        user.setName("João Teste");
+        user.setEmail("joao@gmail.com");
+        user.setPassword("SenhaForte123");
     }
 
     @Test
-    void testSaveRole_Success() {
-        when(roleRepository.findByName("ROLE_USER")).thenReturn(Optional.empty());
-        when(roleRepository.save(any(Role.class))).thenReturn(role);
+    void testSaveUser() {
+        // Arrange - Preparar a simulação
+        String rawPasswrod = user.getPassword();
+        String encodedPassword = "encrypted_password";
 
-        Role savedRole = roleService.saveRole(role);
+        when(userRepository.save(any(User.class))).thenAnswer(i -> i.getArgument(0));
+        when(passwordEncoder.encode(rawPasswrod)).thenReturn(encodedPassword);
 
-        assertNotNull(savedRole);
-        assertEquals("ROLE_USER", savedRole.getName());
-        verify(roleRepository).findByName("ROLE_USER");
-        verify(roleRepository).save(role);
+        // Act - Ação
+        User savedUser = userService.saveUser(user);
+
+        // Assert - Verificar
+        assertNotNull(savedUser.getCreateDate());
+        assertEquals(encodedPassword, savedUser.getPassword());
+        assertNotEquals(encodedPassword, savedUser.getPassword());
+        assertNotNull(savedUser.getRoles());
+        assertEquals(1, savedUser.getRoles().size());
+
+        verify(userRepository).save(user);
+        verify(passwordEncoder).encode(rawPasswrod);
     }
 
     @Test
-    void testSaveRole_ThrowsException_WhenRoleExists() {
-        when(roleRepository.findByName("ROLE_USER")).thenReturn(Optional.of(role));
+    void testFindAll() {
+        // Arrange - Preparar
+        List<User> userList = Collections.singletonList(user);
+        when(userRepository.findAll()).thenReturn(userList);
 
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            roleService.saveRole(role);
-        });
+        // Act - Ação
+        List<User> result = userService.findAll();
 
-        assertEquals("Role with name ROLE_USER already exists.", exception.getMessage());
-        verify(roleRepository, never()).save(any(Role.class));
-    }
-
-    @Test
-    void testFindAllRoles() {
-        List<Role> roleList = Collections.singletonList(role);
-        when(roleRepository.findAll()).thenReturn(roleList);
-
-        List<Role> result = roleService.findAllRoles();
-
-        assertNotNull(result);
+        // Assert - Verifica
         assertEquals(1, result.size());
         assertEquals("ROLE_USER", result.get(0).getName());
         verify(roleRepository).findAll();
     }
 
     @Test
-    void testFindRoleByName_WhenRoleExists() {
-        when(roleRepository.findByName("ROLE_USER")).thenReturn(Optional.of(role));
+    void testFindByIdFound() {
+        // Arrange - Preparar
+        UUID id = user.getUuid();
+        when(userRepository.findById(id)).thenReturn(Optional.of(user));
 
-        Optional<Role> result = roleService.findRoleByName("ROLE_USER");
+        Optional<User> result = userService.findById(id);
 
         assertTrue(result.isPresent());
-        assertEquals("ROLE_USER", result.get().getName());
-        verify(roleRepository).findByName("ROLE_USER");
+        assertEquals("João Teste", result.get().getName());
+        verify(userRepository).findById(id);
     }
 
     @Test
-    void testFindRoleByName_WhenRoleNotFound() {
-        when(roleRepository.findByName("ROLE_NONEXISTENT")).thenReturn(Optional.empty());
+    void testFindByEmail() {
+        String userEmail = user.getEmail();
 
-        Optional<Role> result = roleService.findRoleByName("ROLE_NONEXISTENT");
+        when(userRepository.findByEmail(userEmail)).thenReturn(Optional.of(user));
 
-        assertFalse(result.isPresent());
-        verify(roleRepository).findByName("ROLE_NONEXISTENT");
+        Optional<User> result = userService.findByEmail(userEmail);
+
+        assertTrue(result.isPresent());
+        assertEquals(userEmail, result.get().getEmail());
+        verify(userRepository).findByEmail(userEmail);
     }
-    
+
     @Test
-    void testDeleteRole_Success() {
-        Long roleId = 1L;
-        when(roleRepository.existsById(roleId)).thenReturn(true);
-        doNothing().when(roleRepository).deleteById(roleId);
+    void testUpdateUser() {
+        // Arrange: Preparamos os dados
+        UUID id = user.getUuid();
 
-        roleService.deleteRole(roleId);
+        User updatedInfo = new User();
+        updatedInfo.setName("João Atualizado");
+        updatedInfo.setEmail("novo@email.com");
+        updatedInfo.setPassword("NovaSenha456");
 
-        verify(roleRepository).deleteById(roleId);
+        String encodedNewPassword = "nova_senha_encriptada";
+
+        when(userRepository.findById(id)).thenReturn(Optional.of(user));
+        when(passwordEncoder.encode(updatedInfo.getPassword())).thenReturn(encodedNewPassword);
+
+        when(userRepository.save(any(User.class))).thenReturn(user);
+
+        // Act: Executamos o método que queremos testar
+        User result = userService.updateUser(id, updatedInfo);
+
+        // Assert: Verificamos se o resultado está correto
+        assertEquals("João Atualizado", result.getName());
+        assertEquals("novo@email.com", result.getEmail());
+        assertEquals(encodedNewPassword, result.getPassword()); 
+        assertNotNull(result.getAlterDate()); 
+        // Verificamos se os mocks foram chamados como esperado
+        verify(userRepository).findById(id);
+        verify(userRepository).save(user);
+        verify(passwordEncoder).encode(updatedInfo.getPassword());
     }
 
     @Test
