@@ -101,6 +101,26 @@ services:
       - HR_ENCRYPTION_KEY=my-super-secret-and-long-encryption-key-12345
     networks:
       - sit-network
+
+  operational-service:
+    build:
+      context: ./operational/operational-service 
+    container_name: operational
+    depends_on:
+      - eureka
+      - postgres
+    ports:
+      - "8084:8084" 
+    environment:
+      - EUREKA_HOST=eureka
+      - EUREKA_PORT=8761
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=sitoperational
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=postgres
+    networks:
+      - sit-network
 networks:
   sit-network:
     driver: bridge

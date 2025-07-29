@@ -1,142 +1,71 @@
-package com.logistics.operational.service;
+package com.logistica.operational.controller;
 
-import com.logistics.operational.domain.FreightCalculation;
-import com.logistics.operational.dto.ClientDto;
-import com.logistics.operational.dto.FreightCalculationRequest;
-import com.logistics.operational.dto.FreightCalculationResponse;
-import com.logistics.operational.exception.InvalidDataException;
-import com.logistics.operational.repository.FreightCalculationRepository;
-import com.logistics.operational.util.DistanceCalculator;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.logistica.operational.dto.CollectionOrderRequestDTO;
+import com.logistica.operational.dto.CollectionOrderResponseDTO;
+import com.logistica.operational.models.CollectionOrder;
+import com.logistica.operational.service.CollectionOrderService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@ExtendWith(MockitoExtension.class)
-public class FreightServiceTest {
+@WebMvcTest(CollectionOrderController.class)
+class CollectionOrderControllerTest {
 
-    @Mock
-    private FreightCalculationRepository freightCalculationRepository;
+    @Autowired
+    private MockMvc mockMvc;
 
-    @Mock
-    private ClientServiceClient clientServiceClient;
+    @MockBean
+    private CollectionOrderService orderService;
 
-    @Mock
-    private DistanceCalculator distanceCalculator;
+    @Autowired
+    private ObjectMapper objectMapper;
 
-    @Mock
-    private KafkaTemplate<String, Object> kafkaTemplate;
-
-    @InjectMocks
-    private FreightServiceImpl freightService;
-
-    private FreightCalculationRequest validRequest;
-    private ClientDto clientDto;
+    private CollectionOrderRequestDTO requestDTO;
+    private CollectionOrderResponseDTO responseDTO;
 
     @BeforeEach
     void setUp() {
-        validRequest = FreightCalculationRequest.builder()
-                .clientId(1L)
-                .origin("São Paulo")
-                .destination("Rio de Janeiro")
-                .weight(100.0)
-                .volume(2.0)
-                .rush(false)
-                .fragile(false)
-                .insurance(false)
-                .build();
+        requestDTO = new CollectionOrderRequestDTO();
+        requestDTO.setCustomerId(1L);
+        requestDTO.setOriginAddress("Origem Teste");
+        requestDTO.setDestinationAddress("Destino Teste");
 
-        clientDto = ClientDto.builder()
-                .id(1L)
-                .name("Test Client")
-                .discountPercentage(10.0)
-                .build();
+        responseDTO = new CollectionOrderResponseDTO();
+        responseDTO.setId(1L);
+        responseDTO.setOrderNumber("CO-TESTE-987");
+        responseDTO.setCustomerId(1L);
+        responseDTO.setCustomerName("Cliente Mock");
+        responseDTO.setStatus(CollectionOrder.OrderStatus.PENDING);
+        responseDTO.setCreatedAt(LocalDateTime.now());
     }
 
     @Test
-    void shouldCalculateFreightSuccessfully() {
+    void testCreateOrder_shouldReturn201_whenRequestIsValid() throws Exception {
         // Arrange
-        when(clientServiceClient.getClientById(1L)).thenReturn(clientDto);
-        when(distanceCalculator.calculateDistance("São Paulo", "Rio de Janeiro")).thenReturn(400.0);
-
-        FreightCalculation savedCalculation = FreightCalculation.builder()
-                .id(1L)
-                .clientId(1L)
-                .origin("São Paulo")
-                .destination("Rio de Janeiro")
-                .distance(400.0)
-                .weight(100.0)
-                .volume(2.0)
-                .baseValue(210.0)
-                .totalValue(189.0) // After 10% discount
-                .calculatedAt(LocalDateTime.now())
-                .build();
-
-        when(freightCalculationRepository.save(any())).thenReturn(savedCalculation);
-
-        // Act
-        FreightCalculationResponse response = freightService.calculateFreight(validRequest);
-
-        // Assert
-        assertNotNull(response);
-        assertEquals(1L, response.getId());
-        assertEquals(189.0, response.getTotalValue());
-        verify(kafkaTemplate).send(eq("freight-calculations"), any(FreightCalculation.class));
-    }
-
-    @Test
-    void shouldThrowExceptionWhenWeightIsZero() {
-        // Arrange
-        FreightCalculationRequest invalidRequest = FreightCalculationRequest.builder()
-                .clientId(1L)
-                .origin("São Paulo")
-                .destination("Rio de Janeiro")
-                .weight(0.0)
-                .volume(2.0)
-                .build();
+        // Simula o comportamento do serviço de criação de pedido
+        when(orderService.createOrder(any(CollectionOrderRequestDTO.class))).thenReturn(responseDTO);
 
         // Act & Assert
-        assertThrows(InvalidDataException.class, () -> freightService.calculateFreight(invalidRequest));
-        verify(freightCalculationRepository, never()).save(any());
-    }
-
-    @Test
-    void shouldApplyRushFee() {
-        // Arrange
-        validRequest.setRush(true);
-        when(clientServiceClient.getClientById(1L)).thenReturn(clientDto);
-        when(distanceCalculator.calculateDistance("São Paulo", "Rio de Janeiro")).thenReturn(400.0);
-
-        FreightCalculation savedCalculation = FreightCalculation.builder()
-                .id(1L)
-                .clientId(1L)
-                .origin("São Paulo")
-                .destination("Rio de Janeiro")
-                .distance(400.0)
-                .weight(100.0)
-                .volume(2.0)
-                .rush(true)
-                .baseValue(210.0)
-                .totalValue(236.25) // (210 * 1.25) * 0.9 (client discount)
-                .calculatedAt(LocalDateTime.now())
-                .build();
-
-        when(freightCalculationRepository.save(any())).thenReturn(savedCalculation);
-
-        // Act
-        FreightCalculationResponse response = freightService.calculateFreight(validRequest);
-
-        // Assert
-        assertEquals(236.25, response.getTotalValue());
+        mockMvc.perform(post("/api/v1/collection-orders")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(requestDTO)))
+                .andExpect(status().isCreated()) // Verifica se o status da resposta é 201 (Created)
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.orderNumber").value("CO-TESTE-987"))
+                .andExpect(jsonPath("$.customerId").value(1L))
+                .andExpect(jsonPath("$.customerName").value("Cliente Mock"))
+                .andExpect(jsonPath("$.status").value("PENDING"));
     }
 }

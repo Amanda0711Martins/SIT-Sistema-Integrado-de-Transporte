@@ -1,33 +1,25 @@
-FROM openjdk:11-jdk-slim as build
+# --- Estágio 1: Build da Aplicação ---
+FROM eclipse-temurin:17-jdk-alpine AS builder
 
 WORKDIR /app
 
-# Copiar arquivos de configuração do Maven
-COPY pom.xml .
-COPY mvnw .
-COPY .mvn .mvn
+COPY .mvn/ .mvn
+COPY mvnw pom.xml ./
 
-# Baixar dependências
-RUN ./mvnw dependency:go-offline -B
+RUN ./mvnw dependency:go-offline
 
-# Copiar código-fonte
-COPY src src
+COPY src ./src
 
-# Construir o aplicativo
 RUN ./mvnw package -DskipTests
 
-FROM openjdk:11-jre-slim
+
+# --- Estágio 2: Imagem Final ---
+FROM eclipse-temurin:17-jre-alpine
 
 WORKDIR /app
 
-# Copiar o JAR construído da etapa anterior
-COPY --from=build /app/target/*.jar app.jar
+COPY --from=builder /app/target/operational-service-0.0.1-SNAPSHOT.jar app.jar
 
-# Configurar variáveis de ambiente para Java
-ENV JAVA_OPTS="-Xms256m -Xmx512m"
+EXPOSE 8084
 
-# Expor a porta que o aplicativo escuta
-EXPOSE 8082
-
-# Definir o ponto de entrada para iniciar o aplicativo
-ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar app.jar"]
+ENTRYPOINT ["java", "-jar", "app.jar"]
