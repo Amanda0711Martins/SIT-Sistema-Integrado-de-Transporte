@@ -4,6 +4,8 @@ server:
 spring:
   application:
     name: operational-service
+  config:
+    import: optional:configserver:http://config-server:8888
 
   # Configuração do Banco de Dados
   datasource:

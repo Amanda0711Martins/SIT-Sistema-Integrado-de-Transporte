@@ -7,6 +7,10 @@ services:
       - "8888:8888"
     networks:
       - sit-network
+    depends_on:
+    - eureka
+    volumes:
+    - ./config-server/src/main/resources:/app/config-repo
   eureka:
     build:
       context: ./eureka
