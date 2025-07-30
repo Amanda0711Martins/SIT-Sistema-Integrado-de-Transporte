@@ -1,0 +1,35 @@
+# Configurações Padrão para todos os microserviços
+
+# Configuração do Eureka Client
+eureka:
+  client:
+    service-url:
+      # Aponta para o nome do serviço do Eureka no Docker Compose
+      defaultZone: http://eureka:8761/eureka/
+  instance:
+    prefer-ip-address: true
+
+# Configuração do Banco de Dados (Padrões)
+spring:
+  datasource:
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+# Configurações de monitoramento
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: always

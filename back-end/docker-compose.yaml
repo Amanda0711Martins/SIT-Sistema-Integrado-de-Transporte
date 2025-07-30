@@ -1,4 +1,12 @@
 services:
+  config:
+    build:
+      context: ./config-server
+    container_name: config
+    ports:
+      - "8888:8888"
+    networks:
+      - sit-network
   eureka:
     build:
       context: ./eureka
@@ -30,6 +38,7 @@ services:
     depends_on:
       - postgres
       - eureka
+      - config
     ports:
       - "8081:8081"
     environment:
@@ -49,6 +58,7 @@ services:
     depends_on:
       - postgres
       - eureka
+      - config
     ports:
       - "8082:8082"
     environment:
@@ -69,6 +79,7 @@ services:
     depends_on:
       - postgres
       - eureka
+      - config
     ports:
       - "8080:8080"
     environment:
@@ -90,6 +101,7 @@ services:
     depends_on:
       - postgres
       - eureka
+      - config
     ports:
       - "8083:8083"
     environment:
@@ -109,6 +121,7 @@ services:
     depends_on:
       - eureka
       - postgres
+      - config
     ports:
       - "8084:8084" 
     environment:

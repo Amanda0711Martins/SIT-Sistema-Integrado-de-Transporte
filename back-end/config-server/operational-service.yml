@@ -1,0 +1,40 @@
+server:
+  port: 8084 # Porta para o serviço operacional
+
+spring:
+  application:
+    name: operational-service
+
+  # Configuração do Banco de Dados
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:sitoperational}
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:postgres}
+    driver-class-name: org.postgresql.Driver
+
+  # Configuração do JPA/Hibernate
+  jpa:
+    hibernate:
+      ddl-auto: update # Cria/Atualiza o schema do banco de dados ao iniciar
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+# Configuração do Eureka Client
+eureka:
+  client:
+    service-url:
+      # Aponta para o nome do serviço do Eureka no Docker Compose
+      defaultZone: http://${EUREKA_HOST:eureka}:${EUREKA_PORT:8761}/eureka/
+  instance:
+    prefer-ip-address: true
+
+# Configuração de Logging
+logging:
+  level:
+    com.logistica.operational: INFO
+    org.springframework.web: INFO
+    org.hibernate.SQL: DEBUG
+
