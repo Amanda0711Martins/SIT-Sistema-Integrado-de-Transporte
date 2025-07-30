@@ -58,6 +58,7 @@ services:
       - DB_NAME=sitcustomers
       - DB_USERNAME=postgres
       - DB_PASSWORD=postgres
+       - SPRING_CONFIG_IMPORT=configserver:http://config:888
     networks:
       - sit-network
   financial-service:
@@ -78,6 +79,7 @@ services:
       - DB_NAME=sitfinancial
       - DB_USERNAME=postgres
       - DB_PASSWORD=postgres
+      - SPRING_CONFIG_IMPORT=configserver:http://config:8888
     networks:
       - sit-network
       
@@ -99,6 +101,7 @@ services:
       - DB_NAME=situsers
       - DB_USERNAME=postgres
       - DB_PASSWORD=postgres
+      - SPRING_CONFIG_IMPORT=configserver:http://config:8888
     networks:
       - sit-network
 
@@ -120,6 +123,7 @@ services:
       - DB_USERNAME=postgres
       - DB_PASSWORD=postgres
       - HR_ENCRYPTION_KEY=my-super-secret-and-long-encryption-key-12345
+      - SPRING_CONFIG_IMPORT=configserver:http://config:8888
     networks:
       - sit-network
 
@@ -141,6 +145,8 @@ services:
       - DB_NAME=sitoperational
       - DB_USERNAME=postgres
       - DB_PASSWORD=postgres
+      - SPRING_CONFIG_IMPORT=configserver:http://config:8888
+
     networks:
       - sit-network
 networks:

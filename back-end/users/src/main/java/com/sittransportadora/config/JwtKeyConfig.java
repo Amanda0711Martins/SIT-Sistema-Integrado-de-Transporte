@@ -10,7 +10,8 @@ import java.security.interfaces.RSAPublicKey;
 
 @Configuration
 public class JwtKeyConfig {
-    @Value("${jwt.public.key}")
+   @Value("${jwt.public.key}")
+
     private String publicKey;
 
     @Value("${jwt.private.key}")
