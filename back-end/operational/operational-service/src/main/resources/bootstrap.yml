@@ -1,10 +1,6 @@
 spring:
-  cloud:
-    config:
-      # Endereço do Config Server. 'config-server' é o nome do serviço no seu docker-compose.yml.
-        uri: http://config:8888
-      
-      # (Opcional, mas recomendado)
-      # Se a aplicação não conseguir ligar-se ao Config Server ao arrancar, ela falha imediatamente.
-      # Isto evita que os seus serviços arranquem com configurações em falta.
-    fail-fast: true
+  application:
+    name: operational-service
+
+  config:
+    import: configserver:http://config:8888

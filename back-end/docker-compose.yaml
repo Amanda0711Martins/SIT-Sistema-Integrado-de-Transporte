@@ -10,7 +10,13 @@ services:
     depends_on:
     - eureka
     volumes:
-    - ./config-server/src/main/resources:/app/config-repo
+    - ./config-server/config:/app/config-repo
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8888/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    restart: on-failure
   eureka:
     build:
       context: ./eureka
@@ -24,7 +30,6 @@ services:
     image: postgres:16
     container_name: postgres
     environment:
-      POSTGRES_DB: sit
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     ports:

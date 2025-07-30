@@ -1,0 +1,76 @@
+spring:
+  application:
+    name: user-service
+
+  config:
+    import: optional:configserver:http://config-server:8888
+
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:situsers}
+    username: ${DB_USERNAME:admin}
+    password: ${DB_PASSWORD:123}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: always
+    properties:
+      hibernate:
+        format_sql: true
+    show-sql: true
+    generate-ddl: true
+
+server:
+  port: 8082
+
+jwt:
+  public:
+    key: |
+      -----BEGIN PUBLIC KEY-----
+      MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAnLFPHhnpHYdTrKI74h4F
+      9lPZ6O4czHFdInHNbuKPt+Ngr9TXQb1jEGnWXnrq65+tiUznP32i+ddOMuuYhd6i
+      PMcBRcL6WgKOxi2LBHN6V5jipm7mahNjsqGYaZvQaHm5y2gmDKgWIn+0uEy9D3Lb
+      8LowUcAA3zeBDzKJB4AMjcFjdRkewNcTCbObJa9WDs05EtMVhE3/SAtvhVjo2/SE
+      Wkoxtg6jN5pN3uOKO3MCicyz6MLTl2ne5uplxfgPMSxC0yFl/kHsLCQNAOww5RR/
+      jmjhnBvseNqywxOLN7K5OzRluz3zOE3UKQqCdR4H84JYCT86H0eYxW6V5F1yKykS
+      vwIDAQAB
+      -----END PUBLIC KEY-----
+
+  private:
+    key: |
+      -----BEGIN PRIVATE KEY-----
+      MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCcsU8eGekdh1Os
+      ojviHgX2U9no7hzMcV0icc1u4o+342Cv1NdBvWMQadZeeurrn62JTOc/faL5104y
+      65iF3qI8xwFFwvpaAo7GLYsEc3pXmOKmbuZqE2OyoZhpm9BoebnLaCYMqBYif7S4
+      TL0PctvwujBRwADfN4EPMokHgAyNwWN1GR7A1xMJs5slr1YOzTkS0xWETf9IC2+F
+      WOjb9IRaSjG2DqM3mk3e44o7cwKJzLPowtOXad7m6mXF+A8xLELTIWX+QewsJA0A
+      7DDlFH+OaOGcG+x42rLDE4s3srk7NGW7PfM4TdQpCoJ1HgfzglgJPzofR5jFbpXk
+      XXIrKRK/AgMBAAECggEAB/xRV+tiIgsfjJDIFIILM76aQHDCLvkoEfVSzu/k+y4v
+      Y0apocQRJGkAb9g72L5OjczJjEbO44TBi37OSyRJiGdr/S4urB+tPxRbHWL1PTmh
+      c3H7dDSAxD3QErHKMUji2yb3qXV3i1KO10Wx7POhmecjR0dNxBKEFU4yBZvVB/Ra
+      vtIPHYhciMgiTAS/z+34N9wbv6viMGBkZAu+R/ULCFBt4MGVD9H9V8rVDUYbi+VH
+      W2H9IBwegIwSujeOv1FM09G+O3O96xhXQcPldPHjA+w9XwFh3QAyzaXPruIH2vl+
+      eahnqFJ7tXvpfKfqeNOTbamhqp3dHKzO2+LbnjSXAQKBgQDKbgdbpAPLBWyqCV+m
+      TXti7XLnzRp28Q5q7KNkgOHSyQgM8X6zrnP0fQH0/pP2G5PVXK4LGaQp9NBO3qfQ
+      0yTBDwxbSe4Gb1LSf1vCDrVSKncq+LwESaeNh0Xd8+4tFPNgLgWiNSgashxT13yq
+      +qBWtxKSpTHKXePiZbTwS2yZHwKBgQDGKLt2f0egOeDrRhSHO9FdhGSANFEhAAbF
+      GXcZ/jqgmeJSDUPDR5zouniqYlbccxB1B9bQTTx2WdZjrmt0uCmG5GIk+rD+qQXH
+      /OCDAfUZ784M2ND4jrJk3LbjK7j+beRSQ2sb6sNOxl2NTrrgcOhsiA1vC7/7lbBy
+      cfTirIUyYQKBgQCeHKTookpIKDuA8INiTQDD+32VqrEyGATP5XeWB8jbMCR2n6X8
+      SJXPcFi3+KSvRUkKDTLv/p4oG00dXXIsfM8ncE6Re0RMiGVjfxC3mW9s9zhPOyr4
+      GmOh+vfKbj4pvkR+alQCJ4zklRvlLNn2Xn4gXSxHmHo0e3OEoTZbvj3btwKBgBK6
+      cs1GRky8a6eQ3gvR+X2vL5h2WVyXFgy21WzdfEkFgkBjBI6GTCwqw5DG7pKzRVDq
+      RsE1K4u7/ek56OoFJdeb6jK4htXqv6MhIU8AdlvXMFBCha2YPwANZDOgREG3vSaR
+      PKRM0dy2Hs1mLX9c7HqleS+Pmrt6cEzAvHZX+9bBAoGAF5cJGFX70WGsR2bWQeLc
+      +VhosCTh2mneYfuFqqpTLCDKn53Lzjl8IytIMR794rJcCJ6pUu1xEVE0OshEbqcC
+      pHQZS2YUpe7smf9xe7DCnU8Ua8d3fU9Y2qcrI+lH/mhL5G4PEzO5VxdPnFglyI1r
+      Gge7fB6SY1kO7+sncf0XDRA=
+      -----END PRIVATE KEY-----
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://${EUREKA_HOST:eureka}:${EUREKA_PORT:8761}/eureka/
+  instance:
+    prefer-ip-address: true
