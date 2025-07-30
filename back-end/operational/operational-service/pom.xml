@@ -36,6 +36,15 @@
     </dependencyManagement>
 
     <dependencies>
+        <!-- Comunicação e Descoberta de Serviços -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-openfeign</artifactId>
+        </dependency>
         <!-- Web e Validação -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -57,15 +66,7 @@
             <scope>runtime</scope>
         </dependency>
 
-        <!-- Comunicação e Descoberta de Serviços -->
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-openfeign</artifactId>
-        </dependency>
+        
 
         <!-- Ferramentas de Desenvolvimento -->
         <dependency>
