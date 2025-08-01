@@ -58,7 +58,7 @@ services:
       - DB_NAME=sitcustomers
       - DB_USERNAME=postgres
       - DB_PASSWORD=postgres
-       - SPRING_CONFIG_IMPORT=configserver:http://config:888
+      - SPRING_CONFIG_IMPORT=configserver:http://config:8888
     networks:
       - sit-network
   financial-service:
@@ -93,6 +93,8 @@ services:
       - config
     ports:
       - "8080:8080"
+    env_file:
+      - .env 
     environment:
       - EUREKA_HOST=eureka
       - EUREKA_PORT=8761
