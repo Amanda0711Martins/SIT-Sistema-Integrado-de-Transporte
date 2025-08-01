@@ -8,7 +8,7 @@ import lombok.AllArgsConstructor;
 
 import java.time.LocalDateTime;
 
-import com.logistica.human_resources.model.TimeEntry.EntryType;
+import com.logistica.human_resources.enums.EntryType; // <- Enum do pacote correto
 
 import jakarta.validation.constraints.NotNull;
 
@@ -30,7 +30,7 @@ public class TimeEntryDTO {
     private LocalDateTime exitTime;
 
     @NotNull(message = "Entry type is required")
-    private EntryType entryType;
+    private EntryType entryType; // <- Enum corrigido
 
     private String notes;
 
