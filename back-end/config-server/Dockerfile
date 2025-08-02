@@ -14,6 +14,8 @@ RUN mvn package -DskipTests
 # --- Estágio 2: Imagem Final ---
 FROM eclipse-temurin:17-jre-alpine
 
+RUN apk add --no-cache curl
+
 WORKDIR /app
 
 COPY --from=builder /app/target/*.jar app.jar

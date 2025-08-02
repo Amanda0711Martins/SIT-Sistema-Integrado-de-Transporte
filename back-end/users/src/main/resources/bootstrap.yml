@@ -5,4 +5,9 @@ spring:
   config:
     import: configserver:http://config:8888
 
-
+# eureka:
+#   client:
+#     service-url:
+#       defaultZone: http://eureka:8761/eureka/
+#     register-with-eureka: true
+#     fetch-registry: true

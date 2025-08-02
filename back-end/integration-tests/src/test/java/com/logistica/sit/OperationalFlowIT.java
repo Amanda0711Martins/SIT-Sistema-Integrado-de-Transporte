@@ -3,7 +3,6 @@ package com.logistica.sit;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.Test;
-
 import java.util.Map;
 
 import static org.hamcrest.Matchers.equalTo;

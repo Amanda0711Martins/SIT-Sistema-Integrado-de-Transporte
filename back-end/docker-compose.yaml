@@ -29,7 +29,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 10
-
+    restart: on-failure
   postgres:
     image: postgres:16
     container_name: postgres
@@ -50,54 +50,55 @@ services:
       timeout: 5s
       retries: 5
 
-  customer-service:
-    build:
-      context: ./customer/customer-service
-    container_name: customer-service # Nome padronizado
-    depends_on:
-      # CORRIGIDO: Sintaxe longa com condições
-      postgres:
-        condition: service_healthy
-      eureka:
-        condition: service_healthy
-      config:
-        condition: service_healthy
-    ports:
-      - "8081:8081"
-    env_file:
-      - .env 
-    environment:
-      - SPRING_CONFIG_IMPORT=configserver:http://config:8888
-    networks:
-      - sit-network
+  # customer-service:
+  #   build:
+  #     context: ./customer/customer-service
+  #   container_name: customer-service # Nome padronizado
+  #   depends_on:
+  #     # CORRIGIDO: Sintaxe longa com condições
+  #     postgres:
+  #       condition: service_healthy
+  #     eureka:
+  #       condition: service_healthy
+  #     config:
+  #       condition: service_healthy
+  #   ports:
+  #     - "8081:8081"
+  #   env_file:
+  #     - .env 
+  #   environment:
+  #    - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka:8761/eureka/
+  #     - SPRING_CONFIG_IMPORT=configserver:http://config:8888
+  #   networks:
+  #     - sit-network
 
-  financial-service:
-    build:
-      context: ./financial/financial-service
-    container_name: financial-service # Nome padronizado
-    depends_on:
-      # CORRIGIDO: Sintaxe longa com condições
-      postgres:
-        condition: service_healthy
-      eureka:
-        condition: service_healthy
-      config:
-        condition: service_healthy
-    ports:
-      - "8082:8082"
-    env_file:
-      - .env 
-    environment:
-      - SPRING_CONFIG_IMPORT=configserver:http://config:8888
-    networks:
-      - sit-network
+  # financial-service:
+  #   build:
+  #     context: ./financial/financial-service
+  #   container_name: financial-service # Nome padronizado
+  #   depends_on:
+  #     # CORRIGIDO: Sintaxe longa com condições
+  #     postgres:
+  #       condition: service_healthy
+  #     eureka:
+  #       condition: service_healthy
+  #     config:
+  #       condition: service_healthy
+  #   ports:
+  #     - "8082:8082"
+  #   env_file:
+  #     - .env 
+  #   environment:
+  #     - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka:8761/eureka/
+  #     - SPRING_CONFIG_IMPORT=configserver:http://config:8888
+  #   networks:
+  #     - sit-network
       
   user-service:
     build:
       context: ./users
-    container_name: user-service # Nome padronizado
+    container_name: user-service 
     depends_on:
-      # CORRIGIDO: Sintaxe longa com condições
       postgres:
         condition: service_healthy
       config:
@@ -110,50 +111,53 @@ services:
       - .env 
     environment:
       - SPRING_CONFIG_IMPORT=configserver:http://config:8888
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka:8761/eureka/
     networks:
       - sit-network
 
-  human-resources-service:
-    build:
-      context: ./human-resources/human-resources-service
-    container_name: human-resources-service # Nome padronizado
-    depends_on:
-      # CORRIGIDO: Sintaxe longa com condições
-      postgres:
-        condition: service_healthy
-      eureka:
-        condition: service_healthy
-      config:
-        condition: service_healthy
-    ports:
-      - "8083:8083"
-    env_file:
-      - .env 
-    environment:
-      - SPRING_CONFIG_IMPORT=configserver:http://config:8888
-    networks:
-      - sit-network
+  # human-resources-service:
+  #   build:
+  #     context: ./human-resources/human-resources-service
+  #   container_name: human-resources-service # Nome padronizado
+  #   depends_on:
+  #     # CORRIGIDO: Sintaxe longa com condições
+  #     postgres:
+  #       condition: service_healthy
+  #     eureka:
+  #       condition: service_healthy
+  #     config:
+  #       condition: service_healthy
+  #   ports:
+  #     - "8083:8083"
+  #   env_file:
+  #     - .env 
+  #   environment:
+  #     - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka:8761/eureka/
+  #     - SPRING_CONFIG_IMPORT=configserver:http://config:8888
+  #   networks:
+  #     - sit-network
 
-  operational-service:
-    build:
-      context: ./operational/operational-service 
-    container_name: operational-service # Nome padronizado
-    depends_on:
-      # CORRIGIDO: Sintaxe longa com condições
-      postgres:
-        condition: service_healthy
-      eureka:
-        condition: service_healthy
-      config:
-        condition: service_healthy
-    ports:
-      - "8084:8084"
-    env_file:
-      - .env  
-    environment:
-      - SPRING_CONFIG_IMPORT=configserver:http://config:8888
-    networks:
-      - sit-network
+  # operational-service:
+  #   build:
+  #     context: ./operational/operational-service 
+  #   container_name: operational-service # Nome padronizado
+  #   depends_on:
+  #     # CORRIGIDO: Sintaxe longa com condições
+  #     postgres:
+  #       condition: service_healthy
+  #     eureka:
+  #       condition: service_healthy
+  #     config:
+  #       condition: service_healthy
+  #   ports:
+  #     - "8084:8084"
+  #   env_file:
+  #     - .env  
+  #   environment:
+  #     - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka:8761/eureka/
+  #     - SPRING_CONFIG_IMPORT=configserver:http://config:8888
+  #   networks:
+  #     - sit-network
 
 networks:
   sit-network:

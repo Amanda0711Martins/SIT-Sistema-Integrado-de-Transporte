@@ -52,20 +52,18 @@ public class AuthController {
 
     @PostMapping("/signup")
     public ResponseEntity<UserDTO> signup(@RequestBody UserDTO userDTO) {
+        Role defaultRole = roleService.findRoleByName("ROLE_USER")
+                .orElseThrow(() -> new RuntimeException("Erro: A role padrão 'ROLE_USER' não foi encontrada no banco."));
+
         User user = new User();
         user.setName(userDTO.getName());
         user.setEmail(userDTO.getEmail());
         user.setPhone(userDTO.getPhone());
         user.setAddress(userDTO.getAddress());
-        user.setRoles(Set.of(new Role()));
+        
         String encodedPassword = bCryptPasswordEncoder.encode(userDTO.getPassword());
         user.setPassword(encodedPassword);
-        System.out.println("Saving user with role: " + user.getRoles());
-        user.getRoles().forEach(r -> {
-            System.out.println("  - Role ID: " + r.getId() + ", name: " + r.getName());
-            System.out.println("  - Is managed? " + entityManager.contains(r));
-        });
-
+        user.setRoles(Set.of(defaultRole));
         clienteService.saveUser(user);
         userDTO.setPassword("");
         return ResponseEntity.ok(userDTO);

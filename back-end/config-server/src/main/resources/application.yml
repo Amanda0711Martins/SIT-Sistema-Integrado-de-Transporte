@@ -8,11 +8,11 @@ spring:
       server:
         native:
           search-locations: file:/app/config-repo
-eureka:
-  client:
-    enabled: false
 management:
   endpoints:
     web:
       exposure:
-        include: "*" # ou health,info
+        include: "*"
+  endpoint:
+    health:
+      show-details: always

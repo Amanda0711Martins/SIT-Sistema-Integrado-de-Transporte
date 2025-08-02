@@ -23,6 +23,10 @@ RUN ./mvnw package -DskipTests
 # Usa uma imagem base leve, apenas com o Java Runtime
 FROM eclipse-temurin:17-jre-alpine
 
+# CORREÇÃO: Usa o gerenciador de pacotes 'apk' do Alpine para instalar o curl
+# A flag '--no-cache' atualiza, instala e limpa em um único passo.
+RUN apk add --no-cache curl
+
 # Define o diretório de trabalho
 WORKDIR /app
 
