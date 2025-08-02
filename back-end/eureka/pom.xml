@@ -30,10 +30,7 @@
             <artifactId>spring-cloud-starter-netflix-eureka-server</artifactId>
             <version>4.1.1</version>
         </dependency>
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-config</artifactId>
-        </dependency>
+        
         <!-- Web e monitoramento -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

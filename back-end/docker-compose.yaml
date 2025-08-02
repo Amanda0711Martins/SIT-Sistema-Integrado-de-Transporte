@@ -7,16 +7,15 @@ services:
       - "8888:8888"
     networks:
       - sit-network
-    depends_on:
-    - eureka
     volumes:
-    - ./config-server/config:/app/config-repo
+      - ./config-server/config:/app/config-repo
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8888/actuator/health"]
       interval: 10s
       timeout: 5s
       retries: 10
     restart: on-failure
+
   eureka:
     build:
       context: ./eureka
@@ -25,6 +24,11 @@ services:
       - "8761:8761"
     networks:
       - sit-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8761/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
 
   postgres:
     image: postgres:16
@@ -39,46 +43,51 @@ services:
     volumes:
       - pg_data:/var/lib/postgresql/data
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    # ADICIONADO: Healthcheck para o Postgres
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   customer-service:
     build:
       context: ./customer/customer-service
-    container_name: customer
+    container_name: customer-service # Nome padronizado
     depends_on:
-      - postgres
-      - eureka
-      - config
+      # CORRIGIDO: Sintaxe longa com condições
+      postgres:
+        condition: service_healthy
+      eureka:
+        condition: service_healthy
+      config:
+        condition: service_healthy
     ports:
       - "8081:8081"
+    env_file:
+      - .env 
     environment:
-      - EUREKA_HOST=eureka
-      - EUREKA_PORT=8761
-      - DB_HOST=postgres
-      - DB_PORT=5432
-      - DB_NAME=sitcustomers
-      - DB_USERNAME=postgres
-      - DB_PASSWORD=postgres
       - SPRING_CONFIG_IMPORT=configserver:http://config:8888
     networks:
       - sit-network
+
   financial-service:
     build:
       context: ./financial/financial-service
-    container_name: financial
+    container_name: financial-service # Nome padronizado
     depends_on:
-      - postgres
-      - eureka
-      - config
+      # CORRIGIDO: Sintaxe longa com condições
+      postgres:
+        condition: service_healthy
+      eureka:
+        condition: service_healthy
+      config:
+        condition: service_healthy
     ports:
       - "8082:8082"
+    env_file:
+      - .env 
     environment:
-      - EUREKA_HOST=eureka
-      - EUREKA_PORT=8761
-      - DB_HOST=postgres
-      - DB_PORT=5432
-      - DB_NAME=sitfinancial
-      - DB_USERNAME=postgres
-      - DB_PASSWORD=postgres
       - SPRING_CONFIG_IMPORT=configserver:http://config:8888
     networks:
       - sit-network
@@ -86,45 +95,41 @@ services:
   user-service:
     build:
       context: ./users
-    container_name: users
+    container_name: user-service # Nome padronizado
     depends_on:
-      - postgres
-      - eureka
-      - config
+      # CORRIGIDO: Sintaxe longa com condições
+      postgres:
+        condition: service_healthy
+      config:
+        condition: service_healthy
+      eureka:
+        condition: service_healthy
     ports:
       - "8080:8080"
     env_file:
       - .env 
     environment:
-      - EUREKA_HOST=eureka
-      - EUREKA_PORT=8761
-      - DB_HOST=postgres
-      - DB_PORT=5432
-      - DB_NAME=situsers
-      - DB_USERNAME=postgres
-      - DB_PASSWORD=postgres
       - SPRING_CONFIG_IMPORT=configserver:http://config:8888
     networks:
       - sit-network
 
-
   human-resources-service:
     build:
       context: ./human-resources/human-resources-service
-    container_name: human-resources
+    container_name: human-resources-service # Nome padronizado
     depends_on:
-      - postgres
-      - eureka
-      - config
+      # CORRIGIDO: Sintaxe longa com condições
+      postgres:
+        condition: service_healthy
+      eureka:
+        condition: service_healthy
+      config:
+        condition: service_healthy
     ports:
       - "8083:8083"
+    env_file:
+      - .env 
     environment:
-      - DB_HOST=postgres
-      - DB_PORT=5432
-      - DB_NAME=sithumanresources
-      - DB_USERNAME=postgres
-      - DB_PASSWORD=postgres
-      - HR_ENCRYPTION_KEY=my-super-secret-and-long-encryption-key-12345
       - SPRING_CONFIG_IMPORT=configserver:http://config:8888
     networks:
       - sit-network
@@ -132,25 +137,24 @@ services:
   operational-service:
     build:
       context: ./operational/operational-service 
-    container_name: operational
+    container_name: operational-service # Nome padronizado
     depends_on:
-      - eureka
-      - postgres
-      - config
+      # CORRIGIDO: Sintaxe longa com condições
+      postgres:
+        condition: service_healthy
+      eureka:
+        condition: service_healthy
+      config:
+        condition: service_healthy
     ports:
-      - "8084:8084" 
+      - "8084:8084"
+    env_file:
+      - .env  
     environment:
-      - EUREKA_HOST=eureka
-      - EUREKA_PORT=8761
-      - DB_HOST=postgres
-      - DB_PORT=5432
-      - DB_NAME=sitoperational
-      - DB_USERNAME=postgres
-      - DB_PASSWORD=postgres
       - SPRING_CONFIG_IMPORT=configserver:http://config:8888
-
     networks:
       - sit-network
+
 networks:
   sit-network:
     driver: bridge

@@ -46,38 +46,33 @@ public class StringToRSAKeyConverter {
     }
 
     public RSAPrivateKey convertPriString(String privateKeyPem) {
-        try {
-            log.info("Iniciando conversão da chave privada...");
-        log.debug("Conteúdo original da chave PEM: " + privateKeyPem); // Use DEBUG para não poluir o log em produção
-
-        // 1. Verificação de segurança
+    try {
+        log.info("Iniciando conversão da chave privada...");
         if (privateKeyPem == null || privateKeyPem.isEmpty()) {
-            // Lide com o erro - lance uma exceção ou retorne
             log.error("A string da chave privada (PEM) está nula ou vazia.");
-            // throw new IllegalArgumentException("Chave PEM não pode ser nula ou vazia.");
+            throw new IllegalArgumentException("Chave privada PEM não pode ser nula ou vazia.");
         }
 
-        // 2. Abordagem Robusta para limpeza
         String privateKeyContent = privateKeyPem
-        .replace("-----BEGIN PRIVATE KEY-----", "")
-        .replace("-----END PRIVATE KEY-----", "")
-        .replace("-----BEGIN RSA PRIVATE KEY-----", "")
-        .replace("-----END RSA PRIVATE KEY-----", "")
-        .replaceAll("\\s", "");
+                .replace("-----BEGIN PRIVATE KEY-----", "")  // CORRETO
+                .replace("-----END PRIVATE KEY-----", "")    // CORRETO
+                .replace("-----BEGIN RSA PRIVATE KEY-----", "")
+                .replace("-----END RSA PRIVATE KEY-----", "")
+                .replaceAll("\\s", "");
+
         log.info("Conversão feita da chave privada. Conteúdo final: " + privateKeyContent);
 
+        byte[] encoded = Base64.getDecoder().decode(privateKeyContent);
 
-            byte[] encoded = Base64.getMimeDecoder().decode(privateKeyContent);
-            log.debug("Chave privada decodificada. Tamanho: {} bytes", encoded.length);
+        PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(encoded);
+        KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+        RSAPrivateKey privateKey = (RSAPrivateKey) keyFactory.generatePrivate(keySpec);
 
-            PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(encoded);
-            KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-            RSAPrivateKey privateKey = (RSAPrivateKey) keyFactory.generatePrivate(keySpec);
-            log.info("Chave privada convertida com sucesso.");
-            return privateKey;
-        } catch (Exception e) {
-            log.error("Erro ao converter chave privada", e);
-            throw new IllegalArgumentException("Failed to convert private key string to RSAPrivateKey", e);
-        }
+        log.info("Chave privada convertida com sucesso.");
+        return privateKey;
+
+    } catch (Exception e) {
+        log.error("Erro ao converter chave privada", e);
+        throw new IllegalArgumentException("Failed to convert private key string to RSAPrivateKey", e);
     }
-}
+}}
