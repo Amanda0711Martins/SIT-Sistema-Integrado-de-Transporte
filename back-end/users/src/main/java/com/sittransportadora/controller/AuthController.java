@@ -11,6 +11,7 @@ import com.sittransportadora.service.UserService;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.transaction.Transactional;
 
 import com.sittransportadora.service.RoleService;
 import org.springframework.http.HttpHeaders;
@@ -52,19 +53,7 @@ public class AuthController {
 
     @PostMapping("/signup")
     public ResponseEntity<UserDTO> signup(@RequestBody UserDTO userDTO) {
-        Role defaultRole = roleService.findRoleByName("ROLE_USER")
-                .orElseThrow(() -> new RuntimeException("Erro: A role padrão 'ROLE_USER' não foi encontrada no banco."));
-
-        User user = new User();
-        user.setName(userDTO.getName());
-        user.setEmail(userDTO.getEmail());
-        user.setPhone(userDTO.getPhone());
-        user.setAddress(userDTO.getAddress());
-        
-        String encodedPassword = bCryptPasswordEncoder.encode(userDTO.getPassword());
-        user.setPassword(encodedPassword);
-        user.setRoles(Set.of(defaultRole));
-        clienteService.saveUser(user);
+        User savedUser = clienteService.signupNewUser(userDTO);
         userDTO.setPassword("");
         return ResponseEntity.ok(userDTO);
     }

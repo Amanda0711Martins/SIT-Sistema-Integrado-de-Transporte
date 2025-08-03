@@ -2,6 +2,8 @@ package com.sittransportadora.service;
 
 import com.sittransportadora.model.Role;
 import com.sittransportadora.repository.RoleRepository;
+
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -14,17 +16,18 @@ public class RoleService {
 
     private final RoleRepository roleRepository;
 
-    public Role saveRole(Role role) {
+    @Transactional   
+    public Role saveRole(Role role) {  
         if (roleRepository.findByName(role.getName()).isPresent()) {
             throw new IllegalArgumentException("Role with name " + role.getName() + " already exists.");
         }
         return roleRepository.save(role);
     }
-
+    
     public List<Role> findAllRoles() {
         return roleRepository.findAll();
     }
-
+    @Transactional
     public Optional<Role> findRoleByName(String name) {
         return roleRepository.findByName(name);
     }
