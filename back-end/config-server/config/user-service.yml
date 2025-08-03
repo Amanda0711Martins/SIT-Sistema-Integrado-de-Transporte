@@ -1,15 +1,12 @@
-# eureka:
-#   client:
-#     service-url:
-#       defaultZone: http://eureka:8761/eureka/
-#     register-with-eureka: true
-#     fetch-registry: true
+eureka:
+  client:
+    service-url:
+      defaultZone: http://eureka:8761/eureka/
+    register-with-eureka: true
+    fetch-registry: true
 spring:
   application:
     name: user-service
-
-  config:
-    import: optional:configserver:http://config:8888
 
   datasource:
     url: jdbc:postgresql://${DB_HOST:postgres}:${DB_PORT:5432}/${DB_NAME:situsers}
@@ -101,8 +98,6 @@ jwt:
       dbOTmLoICxpxwyR+5iaRJ9PJKS4APcrYAvGdI3U/oD9BT+5hkKKt1T1nCfE6KyqP
       J8NVDLPmvzQohgZFJ3BfFspcvJTl4utsR0/OCWXZZClJyLd/LXxoHDXS
       -----END RSA PRIVATE KEY-----
-
-
 
 
 logging:
