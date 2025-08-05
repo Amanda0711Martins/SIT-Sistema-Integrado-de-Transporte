@@ -43,56 +43,59 @@ services:
     volumes:
       - pg_data:/var/lib/postgresql/data
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
-    # ADICIONADO: Healthcheck para o Postgres
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 10s
       timeout: 5s
       retries: 5
 
-  # customer-service:
-  #   build:
-  #     context: ./customer/customer-service
-  #   container_name: customer-service # Nome padronizado
-  #   depends_on:
-  #     # CORRIGIDO: Sintaxe longa com condições
-  #     postgres:
-  #       condition: service_healthy
-  #     eureka:
-  #       condition: service_healthy
-  #     config:
-  #       condition: service_healthy
-  #   ports:
-  #     - "8081:8081"
-  #   env_file:
-  #     - .env 
-  #   environment:
-  #    - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka:8761/eureka/
-  #     - SPRING_CONFIG_IMPORT=configserver:http://config:8888
-  #   networks:
-  #     - sit-network
+  customer-service:
+    build:
+      context: ./customer/customer-service
+    container_name: customer-service 
+    depends_on:
+      postgres:
+        condition: service_healthy
+      eureka:
+        condition: service_healthy
+      config:
+        condition: service_healthy
+    ports:
+      - "8081:8081"
+    env_file:
+      - .env 
+    environment:
+      - SPRING_APPLICATION_JSON={"eureka":{"client":{"serviceUrl":{"defaultZone":"http://eureka:8761/eureka/"}}}}
+      - SPRING_CONFIG_IMPORT=configserver:http://config:8888
+      - SPRING_APPLICATION_NAME=customer-service
+    networks:
+      - sit-network
 
-  # financial-service:
-  #   build:
-  #     context: ./financial/financial-service
-  #   container_name: financial-service # Nome padronizado
-  #   depends_on:
-  #     # CORRIGIDO: Sintaxe longa com condições
-  #     postgres:
-  #       condition: service_healthy
-  #     eureka:
-  #       condition: service_healthy
-  #     config:
-  #       condition: service_healthy
-  #   ports:
-  #     - "8082:8082"
-  #   env_file:
-  #     - .env 
-  #   environment:
-  #     - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka:8761/eureka/
-  #     - SPRING_CONFIG_IMPORT=configserver:http://config:8888
-  #   networks:
-  #     - sit-network
+  financial-service:
+    build:
+      context: ./financial/financial-service
+    container_name: financial-service
+    depends_on:
+      postgres:
+        condition: service_healthy
+      eureka:
+        condition: service_healthy
+      config:
+        condition: service_healthy
+    ports:
+      - "8082:8082"
+    env_file:
+      - .env 
+    environment:
+      - SPRING_APPLICATION_JSON={"eureka":{"client":{"serviceUrl":{"defaultZone":"http://eureka:8761/eureka/"}}}}
+      - SPRING_CONFIG_IMPORT=configserver:http://config:8888
+      - SPRING_CLOUD_CONFIG_FAIL_FAST=true
+      - SPRING_CLOUD_CONFIG_RETRY_MAX_ATTEMPTS=30
+      - SPRING_CLOUD_CONFIG_RETRY_INITIAL_INTERVAL=2000
+      - SPRING_CLOUD_CONFIG_RETRY_MULTIPLIER=1.2
+      - SPRING_APPLICATION_NAME=financial-service
+    networks:
+      - sit-network
       
   user-service:
     build:
@@ -110,54 +113,68 @@ services:
     env_file:
       - .env 
     environment:
-       - SPRING_APPLICATION_JSON={"eureka":{"client":{"serviceUrl":{"defaultZone":"http://eureka:8761/eureka/"}}}}
-       - SPRING_CONFIG_IMPORT=configserver:http://config:8888
+      - SPRING_APPLICATION_JSON={"eureka":{"client":{"serviceUrl":{"defaultZone":"http://eureka:8761/eureka/"}}}}
+      - SPRING_CONFIG_IMPORT=configserver:http://config:8888
+      - SPRING_APPLICATION_NAME=user-service
+      - SPRING_CLOUD_CONFIG_FAIL_FAST=true
+      - SPRING_CLOUD_CONFIG_RETRY_MAX_ATTEMPTS=30
+      - SPRING_CLOUD_CONFIG_RETRY_INITIAL_INTERVAL=2000
+      - SPRING_CLOUD_CONFIG_RETRY_MULTIPLIER=1.2
     networks:
       - sit-network
 
-  # human-resources-service:
-  #   build:
-  #     context: ./human-resources/human-resources-service
-  #   container_name: human-resources-service # Nome padronizado
-  #   depends_on:
-  #     # CORRIGIDO: Sintaxe longa com condições
-  #     postgres:
-  #       condition: service_healthy
-  #     eureka:
-  #       condition: service_healthy
-  #     config:
-  #       condition: service_healthy
-  #   ports:
-  #     - "8083:8083"
-  #   env_file:
-  #     - .env 
-  #   environment:
-  #     - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka:8761/eureka/
-  #     - SPRING_CONFIG_IMPORT=configserver:http://config:8888
-  #   networks:
-  #     - sit-network
+  human-resources-service:
+    build:
+      context: ./human-resources/human-resources-service
+    container_name: human-resources-service 
+    depends_on:
+      postgres:
+        condition: service_healthy
+      eureka:
+        condition: service_healthy
+      config:
+        condition: service_healthy
+    ports:
+      - "8083:8083"
+    env_file:
+      - .env 
+    environment:
+      - SPRING_APPLICATION_JSON={"eureka":{"client":{"serviceUrl":{"defaultZone":"http://eureka:8761/eureka/"}}}}
+      - SPRING_CONFIG_IMPORT=configserver:http://config:8888
+      - SPRING_APPLICATION_NAME=human-resources-service
+      - SPRING_CLOUD_CONFIG_FAIL_FAST=true
+      - SPRING_CLOUD_CONFIG_RETRY_MAX_ATTEMPTS=30
+      - SPRING_CLOUD_CONFIG_RETRY_INITIAL_INTERVAL=2000
+      - SPRING_CLOUD_CONFIG_RETRY_MULTIPLIER=1.2
 
-  # operational-service:
-  #   build:
-  #     context: ./operational/operational-service 
-  #   container_name: operational-service # Nome padronizado
-  #   depends_on:
-  #     # CORRIGIDO: Sintaxe longa com condições
-  #     postgres:
-  #       condition: service_healthy
-  #     eureka:
-  #       condition: service_healthy
-  #     config:
-  #       condition: service_healthy
-  #   ports:
-  #     - "8084:8084"
-  #   env_file:
-  #     - .env  
-  #   environment:
-  #     - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka:8761/eureka/
-  #     - SPRING_CONFIG_IMPORT=configserver:http://config:8888
-  #   networks:
-  #     - sit-network
+    networks:
+      - sit-network
+
+  operational-service:
+    build:
+      context: ./operational/operational-service 
+    container_name: operational-service 
+    depends_on:
+      postgres:
+        condition: service_healthy
+      eureka:
+        condition: service_healthy
+      config:
+        condition: service_healthy
+    ports:
+      - "8084:8084"
+    env_file:
+      - .env  
+    environment:
+      - SPRING_APPLICATION_JSON={"eureka":{"client":{"serviceUrl":{"defaultZone":"http://eureka:8761/eureka/"}}}}
+      - SPRING_CONFIG_IMPORT=configserver:http://config:8888
+      - SPRING_APPLICATION_NAME=operational-service
+      - SPRING_CLOUD_CONFIG_FAIL_FAST=true
+      - SPRING_CLOUD_CONFIG_RETRY_MAX_ATTEMPTS=30
+      - SPRING_CLOUD_CONFIG_RETRY_INITIAL_INTERVAL=2000
+      - SPRING_CLOUD_CONFIG_RETRY_MULTIPLIER=1.2
+    networks:
+      - sit-network
 
 networks:
   sit-network:

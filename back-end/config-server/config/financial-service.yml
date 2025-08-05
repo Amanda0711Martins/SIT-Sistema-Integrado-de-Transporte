@@ -1,26 +1,31 @@
 server:
-  port: 8888
+  port: 8082
 
 jwt:
     public:
       key: |
             -----BEGIN PUBLIC KEY-----
-            MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAnLFPHhnpHYdTrKI74h4F
-            9lPZ6O4czHFdInHNbuKPt+Ngr9TXQb1jEGnWXnrq65+tiUznP32i+ddOMuuYhd6i
-            PMcBRcL6WgKOxi2LBHN6V5jipm7mahNjsqGYaZvQaHm5y2gmDKgWIn+0uEy9D3Lb
-            8LowUcAA3zeBDzKJB4AMjcFjdRkewNcTCbObJa9WDs05EtMVhE3/SAtvhVjo2/SE
-            Wkoxtg6jN5pN3uOKO3MCicyz6MLTl2ne5uplxfgPMSxC0yFl/kHsLCQNAOww5RR/
-            jmjhnBvseNqywxOLN7K5OzRluz3zOE3UKQqCdR4H84JYCT86H0eYxW6V5F1yKykS
-            vwIDAQAB
+            MIICITANBgkqhkiG9w0BAQEFAAOCAg4AMIICCQKCAgB2P7QP45E+NgD1Rs2S6dp8
+            wwO3/UsiH4S6mI33u+BrJ5TQ/9M3dXl7NCK7aqcwRtdTj/icjuGsY9SyjvSEV4DO
+            JGtmfg7qQR+vWDYXxuRatEfXSsJVEwjcLBJaCgcpHQ5S91gsPSsuM7c5aGsRJHJl
+            SWKgkeUpHdOiU4Hf59mZhumF0onsmo3S3zGOB0yYoV9FzCIo49aiJYbX+cQUHakC
+            8QSc6HSpsQzTAWgF2UTusMwlykJzrKAYroVKO4egjl0K6IS0y187xq3PLI0PrJND
+            v5FiMtmpYx1ZGkU35hq5KGK1v1+jM3tUzqLy9ityQX47ReMFjvmC3H0psy8OxM2A
+            lOoNS+lYFtnHG/SyyWFOYJ09drSNHUBpZCfalABpOkcxeErWf/yPc7ytLAJHO9iz
+            Y48Smh9s+wr7mTtuHAsPyn7XWEPPJAjuD/6I1H9EYDkYEGwYd7RblsfRhIM2NBWR
+            zMNKhwCv8E5WdzyIxpEdN1xJPkfr5uZ7NbBQqmEoq4Si1W9fs0uZCylXbRV9FMGm
+            yo8cG36WavyJl3aRLONaEfPmNdPO7filj43zThTYMtJlA4Bam4EoGqO6plf1Sh7/
+            y+eHW/bhVSjv2L+E+ZFgcmf/agtSWVW+pQXTxdfpuLzkvpEZ0QpTQnGDfUBnuolY
+            rJfV2L/8nNzy29hl9z0TYQIDAQAB
             -----END PUBLIC KEY-----
 
 spring:
   application:
     name: financial-service
-  config:
-    import: optional:configserver:http://config-server:8888
+  # config:
+  #   import: optional:configserver:http://config-server:8888
   datasource:
-    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:sitcustomer}
+    url: jdbc:postgresql://${DB_HOST:postgres}:${DB_PORT:5432}/${DB_NAME:sitfinancial}
     username: ${DB_USERNAME:postgres}
     password: ${DB_PASSWORD:postgres}
     driver-class-name: org.postgresql.Driver
@@ -35,12 +40,12 @@ spring:
   jackson:
     date-format: yyyy-MM-dd'T'HH:mm:ss.SSSZ
     default-property-inclusion: NON_NULL
-eureka:
-  client:
-    register-with-eureka: true
-    fetch-registry: true
-    service-url:
-      defaultZone: http://eureka:8761/eureka/
+# eureka:
+#   client:
+#     register-with-eureka: true
+#     fetch-registry: true
+#     service-url:
+#       defaultZone: http://eureka:8761/eureka/
 
 management:
   endpoints:

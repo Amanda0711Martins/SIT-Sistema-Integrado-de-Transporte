@@ -45,6 +45,10 @@
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-openfeign</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-config</artifactId>
+        </dependency>
         <!-- Web e Validação -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -66,7 +70,6 @@
             <scope>runtime</scope>
         </dependency>
 
-        
 
         <!-- Ferramentas de Desenvolvimento -->
         <dependency>

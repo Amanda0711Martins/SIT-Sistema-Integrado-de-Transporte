@@ -1,23 +1,23 @@
-eureka:
-  client:
-    service-url:
-      defaultZone: http://eureka:8761/eureka/
-    register-with-eureka: true
-    fetch-registry: true
+# eureka:
+#   client:
+#     service-url:
+#       defaultZone: http://eureka:8761/eureka/
+#     register-with-eureka: true
+#     fetch-registry: true
 spring:
   application:
     name: user-service
 
   datasource:
     url: jdbc:postgresql://${DB_HOST:postgres}:${DB_PORT:5432}/${DB_NAME:situsers}
-    username: ${DB_USERNAME:admin}
-    password: ${DB_PASSWORD:123}
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:postgres}
     driver-class-name: org.postgresql.Driver
 
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
-      ddl-auto: always
+      ddl-auto: update
     properties:
       hibernate:
         format_sql: true

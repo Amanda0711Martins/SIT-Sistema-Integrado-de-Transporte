@@ -1,37 +1,56 @@
 server:
   port: 8084 # Porta para o serviço operacional
 
+jwt:
+    public:
+      key: |
+            -----BEGIN PUBLIC KEY-----
+            MIICITANBgkqhkiG9w0BAQEFAAOCAg4AMIICCQKCAgB2P7QP45E+NgD1Rs2S6dp8
+            wwO3/UsiH4S6mI33u+BrJ5TQ/9M3dXl7NCK7aqcwRtdTj/icjuGsY9SyjvSEV4DO
+            JGtmfg7qQR+vWDYXxuRatEfXSsJVEwjcLBJaCgcpHQ5S91gsPSsuM7c5aGsRJHJl
+            SWKgkeUpHdOiU4Hf59mZhumF0onsmo3S3zGOB0yYoV9FzCIo49aiJYbX+cQUHakC
+            8QSc6HSpsQzTAWgF2UTusMwlykJzrKAYroVKO4egjl0K6IS0y187xq3PLI0PrJND
+            v5FiMtmpYx1ZGkU35hq5KGK1v1+jM3tUzqLy9ityQX47ReMFjvmC3H0psy8OxM2A
+            lOoNS+lYFtnHG/SyyWFOYJ09drSNHUBpZCfalABpOkcxeErWf/yPc7ytLAJHO9iz
+            Y48Smh9s+wr7mTtuHAsPyn7XWEPPJAjuD/6I1H9EYDkYEGwYd7RblsfRhIM2NBWR
+            zMNKhwCv8E5WdzyIxpEdN1xJPkfr5uZ7NbBQqmEoq4Si1W9fs0uZCylXbRV9FMGm
+            yo8cG36WavyJl3aRLONaEfPmNdPO7filj43zThTYMtJlA4Bam4EoGqO6plf1Sh7/
+            y+eHW/bhVSjv2L+E+ZFgcmf/agtSWVW+pQXTxdfpuLzkvpEZ0QpTQnGDfUBnuolY
+            rJfV2L/8nNzy29hl9z0TYQIDAQAB
+            -----END PUBLIC KEY-----
+
 spring:
   application:
     name: operational-service
-  config:
-    import: optional:configserver:http://config-server:8888
+  # config:
+  #   import: optional:configserver:http://config-server:8888
 
   # Configuração do Banco de Dados
   datasource:
-    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:sitoperational}
+    datasource:
+    url: jdbc:postgresql://${DB_HOST:postgres}:${DB_PORT:5432}/${DB_NAME:sitoperational}
     username: ${DB_USERNAME:postgres}
     password: ${DB_PASSWORD:postgres}
     driver-class-name: org.postgresql.Driver
+  
 
-  # Configuração do JPA/Hibernate
   jpa:
     hibernate:
-      ddl-auto: update # Cria/Atualiza o schema do banco de dados ao iniciar
+      ddl-auto: update 
     show-sql: true
     properties:
       hibernate:
         format_sql: true
         dialect: org.hibernate.dialect.PostgreSQLDialect
 
-# Configuração do Eureka Client
-eureka:
-  client:
-    service-url:
-      # Aponta para o nome do serviço do Eureka no Docker Compose
-      defaultZone: http://${EUREKA_HOST:eureka}:${EUREKA_PORT:8761}/eureka/
-  instance:
-    prefer-ip-address: true
+# # Configuração do Eureka Client
+# eureka:
+#   client:
+#     service-url:
+#       # Aponta para o nome do serviço do Eureka no Docker Compose
+#       defaultZone: http://${EUREKA_HOST:eureka}:${EUREKA_PORT:8761}/eureka/
+#   instance:
+#     prefer-ip-address: true
 
 # Configuração de Logging
 logging:

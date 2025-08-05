@@ -27,7 +27,7 @@ public abstract class BaseIntegrationTest {
                     .withExposedService("customer", 8081, Wait.forHttp("/actuator/health").forStatusCode(200).withStartupTimeout(Duration.ofSeconds(180)))
                     .withExposedService("financial", 8082, Wait.forHttp("/actuator/health").forStatusCode(200).withStartupTimeout(Duration.ofSeconds(180)))
                     .withExposedService("human-resources", 8083, Wait.forHttp("/actuator/health").forStatusCode(200).withStartupTimeout(Duration.ofSeconds(180)))
-                    .withExposedService("operational", 8084, Wait.forHttp("/actuator/health").forStatusCode(200).withStartupTimeout(Duration.ofSeconds(180)))
+                    .withExposedService("operational", 8084, Wait.forHttp("/actuator/health").forStatusCode(200).withStartupTimeout(Duration.ofSeconds(180)));
 
     public String getServiceHost(String serviceName, int port) {
         return environment.getServiceHost(serviceName, port);
